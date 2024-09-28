@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+.pri-color {
+	color: #614eed!important;
+}
+
+.whi-color {
+    color: white!important;
+}
+
+.bg-pri-color {
+    background-color: #614eed!important;
+}
+
+/* Form input */
+.scan-req-box
+{
+    width: 80%;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.scan-req-form
+{
+
+}
+
+.scan-location-label
+{
+
+}
+
+.scan-req-input
+{
+}
+
+.scan-req-btn
+{
+    color: white;
+    font-weight: 400;
+}
+
+.scan-req-btn:hover {
+    background-color: #7b6de7!important;
+}
