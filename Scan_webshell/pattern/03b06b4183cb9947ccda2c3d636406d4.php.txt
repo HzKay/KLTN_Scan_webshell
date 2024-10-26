@@ -2,9 +2,9 @@
 /*
 /********************************************************************************
 /*
-/*  CL SQL Client - продвинутый SQL-менеджер не уступающий phpmyadmin аналогам.
+/*  CL SQL Client - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SQL-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ phpmyadmin пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 /*
-/*  Вы можете бесплатно скачать последнюю версию на домашней страничке продукта (cyberlords.net):
+/*  пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (cyberlords.net):
 /*
 /*  ~~~~~~~~~~~~~~~~
 /*  [!] Important
@@ -14,14 +14,14 @@
 /*  ~~~~~~~~~~~~~~~~
 /*
 /*  Library features:
-/*   ~ Оптимизированый алгоритм
-/*   ~ Возможность подключения к БД через Unix Socket
-/*   ~ Просмотр, редактирование всех доступных баз для аккаунта, создание новых баз.
-/*   ~ Просмотр, редактирование, создание новых таблиц со всевозможными атрибутами.
-/*   ~ Редактирование отдельных полей таблиц, удаление записей, добавление записей в таблицу, переименование таблиц.
-/*   ~ Выполнение произвольного запроса к БД и таблицам.
-/*   ~ Дампы баз и таблиц, с возможностью отправки по HTTP или просто показа дампа в броузере.
-/*   ~ Просмотр файлов.
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Unix Socket
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ.
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/*   ~ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ HTTP пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+/*   ~ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
 /*
 /*  Date started: 26.09.2005
 /*
@@ -407,37 +407,37 @@ if (!function_exists("new_input")) {
 // Language array
 $lang = array(
  // Russian
- 'ru_text1' => 'Загрузить файл',
- 'ru_text2' => 'Запрос',
- 'ru_text3' => 'Статус сервера',
- 'ru_text4' => 'Переменные сервера',
- 'ru_text5' => 'Процессы сервера',
- 'ru_text6' => 'Список БД',
- 'ru_text7' => 'БД',
+ 'ru_text1' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ',
+ 'ru_text2' => 'пїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text3' => 'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text4' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text5' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text6' => 'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ',
+ 'ru_text7' => 'пїЅпїЅ',
  'ru_text8' => 'Actions',
- 'ru_text9' => 'Создать БД',
- 'ru_text10' => 'Всего БД',
- 'ru_text11' => 'Показать',
- 'ru_text12' => 'Сохранить БД',
- 'ru_text13' => 'Удалить БД',
- 'ru_text14' => 'Таблица',
- 'ru_text15' => 'Создать таблицу',
- 'ru_text16' => 'Структура',
- 'ru_text17' => 'Показать',
- 'ru_text18' => 'Вставить',
- 'ru_text19' => 'Редактировать',
- 'ru_text20' => 'Удалить',
- 'ru_text21' => 'Сохранить таблицу',
- 'ru_text22' => 'Структура таблицы',
- 'ru_text23' => 'Структуру и информацию',
- 'ru_text24' => 'Структуру',
- 'ru_text25' => 'Информацию',
- 'ru_text26' => 'Скачать',
- 'ru_text27' => 'Внимание!!! Файл не существует или нет прав для чтения',
- 'ru_text28' => 'Внимание!!! Файл пустой или другая ошибка',
- 'ru_text29' => 'Информация SQL сервера',
- 'ru_text30' => 'Удалить скрипт',
- 'ru_text31' => 'Спасибо что пользовались SQL клиентом '.$version,
+ 'ru_text9' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ',
+ 'ru_text10' => 'пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ',
+ 'ru_text11' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text12' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ',
+ 'ru_text13' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ',
+ 'ru_text14' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text15' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text16' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text17' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text18' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text19' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text20' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text21' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text22' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text23' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text24' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text25' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text26' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text27' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!!! пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text28' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!!! пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text29' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SQL пїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text30' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ',
+ 'ru_text31' => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ SQL пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ '.$version,
  // English  
  'en_text1' => 'Load File',
  'en_text2' => 'Query',
@@ -1022,7 +1022,7 @@ if (!function_exists("formatsize")) {
  */
 if (!function_exists("AlphanumericalClean")) {
  function AlphanumericalClean( $str = false ) {
-  return preg_replace( "/[^а-яА-Яa-zA-Z0-9\-\_\ ]/", "" , $str );
+  return preg_replace( "/[^пїЅ-пїЅпїЅ-пїЅa-zA-Z0-9\-\_\ ]/", "" , $str );
  }
 }
 
@@ -1109,7 +1109,7 @@ function quicklaunch() {
     array($lang[$language.'_text5'],$baseurl."&act=08"),
     array($lang[$language.'_text30'],$baseurl."&act=13"),
    );
- $str = "<table border=\"0\" width=\"960\">\n<tr align=\"center\">\n <td rowspan=\"2\" width=\"46\"><a href=\"javascript:history.back(-1)\" title=\"Назад\"><img src=\"".basename(__FILE__)."?image=back\"></a></td>\n <td rowspan=\"2\" width=\"47\"><a href=\"javascript:location.reload();\" title=\"Refresh\"><img src=\"".basename(__FILE__)."?image=reload\"></a></td>\n <td rowspan=\"2\" width=\"48\"><a href=\"".$baseurl."\" title=\"На главную\"><img src=\"".basename(__FILE__)."?image=home\"></a></td>\n <td rowspan=\"2\" width=\"48\"><a href=\"".basename(__FILE__)."?\" title=\"Login page\"><img src=\"".basename(__FILE__)."?image=log_in_off\"></a></td>\n <td colspan=\"".count($quicklaunch)."\" width=\"760\"><hr><img border=\"0\" src=\"".basename(__FILE__)."?image=info\" align=\"absmiddle\"><B>".get_server_info()." running in ".AlphanumericalClean($server).":".AlphanumericalClean($port)." as ".AlphanumericalClean($login)." </B><BR><hr></td>\n</tr>\n<tr>";
+ $str = "<table border=\"0\" width=\"960\">\n<tr align=\"center\">\n <td rowspan=\"2\" width=\"46\"><a href=\"javascript:history.back(-1)\" title=\"пїЅпїЅпїЅпїЅпїЅ\"><img src=\"".basename(__FILE__)."?image=back\"></a></td>\n <td rowspan=\"2\" width=\"47\"><a href=\"javascript:location.reload();\" title=\"Refresh\"><img src=\"".basename(__FILE__)."?image=reload\"></a></td>\n <td rowspan=\"2\" width=\"48\"><a href=\"".$baseurl."\" title=\"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ\"><img src=\"".basename(__FILE__)."?image=home\"></a></td>\n <td rowspan=\"2\" width=\"48\"><a href=\"".basename(__FILE__)."?\" title=\"Login page\"><img src=\"".basename(__FILE__)."?image=log_in_off\"></a></td>\n <td colspan=\"".count($quicklaunch)."\" width=\"760\"><hr><img border=\"0\" src=\"".basename(__FILE__)."?image=info\" align=\"absmiddle\"><B>".get_server_info()." running in ".AlphanumericalClean($server).":".AlphanumericalClean($port)." as ".AlphanumericalClean($login)." </B><BR><hr></td>\n</tr>\n<tr>";
  if (count($quicklaunch) > 0) {
   foreach($quicklaunch as $item) {
    $str .= "\n <td align=\"center\">[ <a href=\"".$item[1]."\">".$item[0]."</a> ]</td>";
@@ -1323,7 +1323,7 @@ if(isset($dbtype)) {
 //--------------------------------
 //
 echo "<html>\n<head>\n<title>[  CL SQL Client  ]</title>\n<meta http-equiv=Content-Type Pragma: no-cache; content=\"text/html; charset=windows-1251\">\n<style>\n* {\n margin: 0;\n padding: 0;\n}\nbody {\n margin-top: 1px;\n margin-right: 1px;\n margin-bottom: 1px;\n margin-left: 1px;\n background-color: #CCCCCC;\n font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;\n font-size:12px;\n}
-table {\n padding: 0em;\n font-size: 0.85em;\n background-color: #D7D8DA;\n}\ntr {\n font-size:12px;\n BORDER-RIGHT: #aaaaaa 1px solid;\n BORDER-TOP: #eeeeee 1px solid;\n BORDER-LEFT: #eeeeee 1px solid;\n BORDER-BOTTOM: #aaaaaa 1px solid;\n}\ntd {\n font-size:12px;\n BORDER-RIGHT: #aaaaaa 1px solid;\n BORDER-TOP: #eeeeee 1px solid;\n BORDER-LEFT: #eeeeee 1px solid;\n BORDER-BOTTOM: #aaaaaa 1px solid;\n}\na {\n color: #003366;\n text-decoration: none;\n}\na:hover {\n color: #003366;\n}\na img {\n border: none;\n}\ninput,textarea,select {\n font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;\n font-size: 1em;\n}\n</style>\n<script language=\"javascript\">function confirm_function(url) {\n if(confirm('Вы уверены?')){\n  window.location = ''+url;\n }\n}</script></head>\n<body>\n".quicklaunch()."\n<table border=\"0\" width=\"960\">\n<tr align=\"center\" valign=\"top\">\n <td width=\"200\">".db_list($id)."</td>\n<td width=\"760\">\n<center>\n";
+table {\n padding: 0em;\n font-size: 0.85em;\n background-color: #D7D8DA;\n}\ntr {\n font-size:12px;\n BORDER-RIGHT: #aaaaaa 1px solid;\n BORDER-TOP: #eeeeee 1px solid;\n BORDER-LEFT: #eeeeee 1px solid;\n BORDER-BOTTOM: #aaaaaa 1px solid;\n}\ntd {\n font-size:12px;\n BORDER-RIGHT: #aaaaaa 1px solid;\n BORDER-TOP: #eeeeee 1px solid;\n BORDER-LEFT: #eeeeee 1px solid;\n BORDER-BOTTOM: #aaaaaa 1px solid;\n}\na {\n color: #003366;\n text-decoration: none;\n}\na:hover {\n color: #003366;\n}\na img {\n border: none;\n}\ninput,textarea,select {\n font-family: Verdana, Tahoma, Helvetica, Arial, sans-serif;\n font-size: 1em;\n}\n</style>\n<script language=\"javascript\">function confirm_function(url) {\n if(confirm('пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ?')){\n  window.location = ''+url;\n }\n}</script></head>\n<body>\n".quicklaunch()."\n<table border=\"0\" width=\"960\">\n<tr align=\"center\" valign=\"top\">\n <td width=\"200\">".db_list($id)."</td>\n<td width=\"760\">\n<center>\n";
 
 // Switching $act
 if($act == '00') {
@@ -1518,7 +1518,7 @@ if($act == '00') {
   if(!sql_num_fields($sql)) {
    echo "\n<BR><BR>Table is ampty";
   } else {
-   echo "\n<BR><BR>Структура таблицы [ <B>".AlphanumericalClean($tbl)."</B> ]\n<BR>\n<table align=\"center\" border=\"0\" width=\"700\">\n<tr align=\"center\">\n <td>Field</td>\n <td>Type</td>\n <td>NULL</td>\n <td>Key</td>\n <td>Default</td>\n <td>Extra</td>\n <td colspan=\"5\">Action</td>\n</tr>";
+   echo "\n<BR><BR>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ [ <B>".AlphanumericalClean($tbl)."</B> ]\n<BR>\n<table align=\"center\" border=\"0\" width=\"700\">\n<tr align=\"center\">\n <td>Field</td>\n <td>Type</td>\n <td>NULL</td>\n <td>Key</td>\n <td>Default</td>\n <td>Extra</td>\n <td colspan=\"5\">Action</td>\n</tr>";
    while ($row = sql_fetch_assoc($sql)) {
     echo "\n<tr onmouseover=this.style.backgroundColor=\"#CCCCCC\" onmouseout=this.style.backgroundColor=\"\">";
     foreach ($row as $field =>$value) {
@@ -1545,7 +1545,7 @@ if($act == '00') {
  } else {
   if(!isset($field_name)) {
    if(!isset($rows)) {
-    echo "Введите кол-во строк";
+    echo "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ";
     exit;
    }
    echo "\n<BR><BR><B>Create new Table</B><BR>\n<form method=\"post\" action=\"".basename(__FILE__)."\">\n<input type=\"hidden\" name=\"login\" value=\"".$login."\">\n<input type=\"hidden\" name=\"password\" value=\"".$password."\">\n<input type=\"hidden\" name=\"server\" value=\"".$server ."\">\n<input type=\"hidden\" name=\"port\" value=\"".$port ."\">\n<input type=\"hidden\" name=\"dbtype\" value=\"".$dbtype."\">\n<input type=\"hidden\" name=\"act\" value=\"07\">\n<input type=\"hidden\" name=\"db\" value=\"".$db."\">\n<input type=\"hidden\" name=\"new_tbl\" value=\"".$new_tbl."\">\n<input type=\"hidden\" name=\"rows\" value=\"".$rows."\">\n<table>\n<tr>\n <td><B>Field</B></td>\n <td><B>Type</B></td>\n <td><B>Length</B></td>\n <td><B>Atributes</B></td>\n <td><B>NULL</B></td>\n <td><B>Defailt</B></td>\n <td><B>DOP</B></td>\n <td><B>KEYS</B></td>\n</tr>";
@@ -1676,7 +1676,7 @@ if($act == '00') {
    echo "<BR><BR><B><font color=\"red\">".$lang[$language.'_text27']."</font></B><BR>";  
   }
  } else {
-  echo "\n<img border=\"0\" src=\"".basename(__FILE__)."?image=download\">&nbsp;<B>".$lang[$language.'_text11']."</B>\n<BR><BR>\n<form method=\"post\" action=\"".basename(__FILE__)."\">\n<input type=\"hidden\" name=\"login\" value=\"".$login."\">\n<input type=\"hidden\" name=\"password\" value=\"".$password."\">\n<input type=\"hidden\" name=\"server\" value=\"".$server ."\">\n<input type=\"hidden\" name=\"port\" value=\"".$port ."\">\n<input type=\"hidden\" name=\"dbtype\" value=\"".$dbtype."\">\n<input type=\"hidden\" name=\"db\" value=\"".$db."\">\n<input type=\"hidden\" name=\"act\" value=\"11\">Полный путь к файлу: <input type=\"text\" name=\"file\" value=\"/etc/passwd\" size=\"40\"><input type=\"submit\" value=\"".$lang[$language.'_text11']."\"></form>";
+  echo "\n<img border=\"0\" src=\"".basename(__FILE__)."?image=download\">&nbsp;<B>".$lang[$language.'_text11']."</B>\n<BR><BR>\n<form method=\"post\" action=\"".basename(__FILE__)."\">\n<input type=\"hidden\" name=\"login\" value=\"".$login."\">\n<input type=\"hidden\" name=\"password\" value=\"".$password."\">\n<input type=\"hidden\" name=\"server\" value=\"".$server ."\">\n<input type=\"hidden\" name=\"port\" value=\"".$port ."\">\n<input type=\"hidden\" name=\"dbtype\" value=\"".$dbtype."\">\n<input type=\"hidden\" name=\"db\" value=\"".$db."\">\n<input type=\"hidden\" name=\"act\" value=\"11\">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ: <input type=\"text\" name=\"file\" value=\"/etc/passwd\" size=\"40\"><input type=\"submit\" value=\"".$lang[$language.'_text11']."\"></form>";
  }
 } elseif($act == '12') {
  if(isset($file) && !empty($file)) {
@@ -1686,7 +1686,7 @@ if($act == '00') {
    echo "<BR><BR><B><font color=\"red\">".$lang[$language.'_text27']."</font></B><BR>";  
   }
  } else {
-  echo "\n<img border=\"0\" src=\"".basename(__FILE__)."?image=download\">&nbsp;<B>".$lang[$language.'_text26']."</B>\n<BR><BR>\n<form method=\"post\" action=\"".basename(__FILE__)."\">\n<input type=\"hidden\" name=\"login\" value=\"".$login."\">\n<input type=\"hidden\" name=\"password\" value=\"".$password."\">\n<input type=\"hidden\" name=\"server\" value=\"".$server ."\">\n<input type=\"hidden\" name=\"port\" value=\"".$port ."\">\n<input type=\"hidden\" name=\"dbtype\" value=\"".$dbtype."\">\n<input type=\"hidden\" name=\"db\" value=\"".$db."\">\n<input type=\"hidden\" name=\"act\" value=\"12\">Полный путь к файлу: <input type=\"text\" name=\"file\" value=\"/etc/passwd\" size=\"40\"><input type=\"submit\" value=\"".$lang[$language.'_text26']."\"></form>";
+  echo "\n<img border=\"0\" src=\"".basename(__FILE__)."?image=download\">&nbsp;<B>".$lang[$language.'_text26']."</B>\n<BR><BR>\n<form method=\"post\" action=\"".basename(__FILE__)."\">\n<input type=\"hidden\" name=\"login\" value=\"".$login."\">\n<input type=\"hidden\" name=\"password\" value=\"".$password."\">\n<input type=\"hidden\" name=\"server\" value=\"".$server ."\">\n<input type=\"hidden\" name=\"port\" value=\"".$port ."\">\n<input type=\"hidden\" name=\"dbtype\" value=\"".$dbtype."\">\n<input type=\"hidden\" name=\"db\" value=\"".$db."\">\n<input type=\"hidden\" name=\"act\" value=\"12\">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ: <input type=\"text\" name=\"file\" value=\"/etc/passwd\" size=\"40\"><input type=\"submit\" value=\"".$lang[$language.'_text26']."\"></form>";
  }
 } elseif($act == '13') {
  if(isset($rnd) && $rnd == $rndcode) {
@@ -1715,7 +1715,7 @@ if($act == '00') {
 //  HTML (footer)
 //--------------------------------
 //
-echo "<BR><BR>\n</center>\n</td>\n</tr>\n</table><table border=\"1\" width=\"960\">\n<tr align=\"center\">\n <td>--[ <a href=\"http://cyberlords.net\" target=\"new\"><font color=\"green\">Copyright © Cyber Lords</font></a> | CL SQL Client ".$version." | All bugs send to ICQ #899125 <a href=\"http://wwp.icq.com/scripts/contact.dll?msgto=899125\"><img src=\"http://wwp.icq.com/scripts/online.dll?icq=899125&img=5\" border=\"0\" align=\"absmiddle\"></a> | Generation time: ".round(get_micro_time()-start_time,4)." ]--</td>\n</tr>\n</table>\n</body>\n</html>";
+echo "<BR><BR>\n</center>\n</td>\n</tr>\n</table><table border=\"1\" width=\"960\">\n<tr align=\"center\">\n <td>--[ <a href=\"http://cyberlords.net\" target=\"new\"><font color=\"green\">Copyright пїЅ Cyber Lords</font></a> | CL SQL Client ".$version." | All bugs send to ICQ #899125 <a href=\"http://wwp.icq.com/scripts/contact.dll?msgto=899125\"><img src=\"http://wwp.icq.com/scripts/online.dll?icq=899125&img=5\" border=\"0\" align=\"absmiddle\"></a> | Generation time: ".round(get_micro_time()-start_time,4)." ]--</td>\n</tr>\n</table>\n</body>\n</html>";
 
 // Stop Buffering
 @ob_end_flush();
