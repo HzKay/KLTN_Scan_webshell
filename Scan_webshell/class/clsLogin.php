@@ -3,7 +3,7 @@
         private $host = "localhost";
         private $username = "kltn";
         private $password = "123456";
-        private $database = "webshell_check";
+        private $database = "test";
 
         private function connectDB()
         {
@@ -49,16 +49,23 @@
     
                     $typeVarList = $typeVarList . $typeVar;
                 }
-                
+
                 mysqli_stmt_bind_param($stmt, $typeVarList, ...$vars);
             }            
 
             $isExecSuccess = mysqli_stmt_execute($stmt);
+            $isError = mysqli_stmt_errno($stmt);
 
-            if ($isExecSuccess) {
+            if ($isExecSuccess && $isError==0) {
                 $resultExec = mysqli_stmt_get_result($stmt);
+
                 $this->closeConnectDB($conn);
-                return $resultExec;
+                if ($resultExec)
+                {
+                    return $resultExec;
+                } else {
+                    return true;
+                }
             }
             
             $this->closeConnectDB($conn);

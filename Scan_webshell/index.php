@@ -3,140 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/bootstrap.css">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <title>Scan Server</title>
-    <script src="./js/script.js"></script>
-    <script src="./js/jquery-3.6.1.min.js"></script>
-    <script src="./js/bootstrap.bundle.min.js"></script> <!-- Sử dụng bootstrap.bundle để có popper.js -->
+    <link rel="stylesheet" href="./public/css/style.css">
+    <link rel="stylesheet" href="./public/css/bootstrap.css">
+    <link rel="stylesheet" href="./public/css/bootstrap.min.css">
+    <title>Dashboard</title>
+    <script src="./public/js/script.js"></script>
+    <script src="./public/js/chart.js"></script>
+    <script src="./public/js/jquery-3.6.1.min.js"></script>
+    <script src="./public/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container d-flex justify-content-center align-items-center flex-wrap">
-        <div class="scan-req-box">
-            <h4 class="h4 font-weight-bold text-center">QUÉT SERVER</h4>
-            <form action="" method="post" class="scan-req-form">
-                <div class="form-group">
-                    <label for="scan-location" id="" class="scan-location-label">Vị trí quét</label>
-                    <input type="text" name="scan-location-input" class="scan-req-input form-control" id="scan-location" placeholder="./" value="<?php $folderLocation=$_POST["scan-location-input"] ?? ""; echo htmlspecialchars($folderLocation, ENT_QUOTES);?>"> <br>
-                    <small id="" class="form-text text-muted">Mặc định sẽ là từ thư mục chứa module.</small>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Quét" name="btn" class="whi-color btn scan-req-btn bg-pri-color">
-                    <input type="submit" value="Tìm vị trí" name="btn" class="whi-color btn scan-req-btn bg-pri-color">
-                </div>
-            </form>
-        </div>
-    <?php
-        include("./class/clsScan.php");
-        $p = new clsScan();
-
-        if (isset($_POST["btn"]))
-        {
-            switch ($_POST["btn"])
-            {
-                case "Quét": {
-                    $urlToScan = $_POST["scan-location-input"];
-                    $resultScan = $p->checkFilesContent($urlToScan); 
-                    $filesInDir = $p->fileListGlobal;
-                    $numFiles = count($filesInDir);
+    <div class="container-xxl">
+        <div class="row">
+            <div class="col-sm-2">
+                <ul class="list-group list-group-flush p-3">
+                    <li class="list-group-item list-group-action"><a class="nav-link active" href="./index.php">Dashboard</a></li>
+                    <li class="list-group-item list-group-action"><a class="nav-link" href="./scan.php">Quét</a></li>
+                    <li class="list-group-item list-group-action"><a class="nav-link" href="./setting.php">Cài đặt</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-10 p-4">
+                <div class="mb-2">
+                    <h5 class="chart-title text-uppercase font-weight-bold">
+                            Kết quả quét
+                    </h5>
+                <div class="row">
+                    <div class="col-sm-3">  
+                        <canvas id="pieChart" style="height: 200px!important"></canvas>
+                    </div>
                     
-                    if(gettype($filesInDir) == "string")
-                    {
-                        echo $filesInDir;
-                    } else {
-                        echo "
-                        <form method='POST' class='form-group row scan-req-box'>
-                            <table class='table table-striped'>
-                                <thead>
-                                    <tr>
-                                    <th scope='col'>STT</th>
-                                    <th scope='col'>Đường dẫn</th>
-                                    <th scope='col'>Kết quả</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                        ";
-    
-                        for ($i=0; $i < $numFiles; $i++)
-                        {
-                            $filePath = $filesInDir[$i]; 
-                            $result = $resultScan[$i];
-                            $count = $i+1;
-    
-                            echo "
-                                <tr data-toggle='collapse' data-target='#details{$count}' aria-expanded='false' aria-controls='details{$count}'>
-                                    <th scope='row'>{$count}</th>
-                                    <td>{$filePath}</td>
-                                    <td>{$result}</td> 
-                                </tr>
-                                <tr class='collapse' id='details{$count}'>
-                                    <td colspan='3'>
-                                        <div class='p-3'>
-                                            <input name='action-file-location[]' value='{$filePath}' hidden>
-                                            <label for='action-file' class='col-sm-2 col-form-label'>Hành động</label>
-                                            <select id='action-file' name='action-file-chose[]' class='col-sm-10 form-select p-1'>
-                                                <option value='1'>Cho phép</option>
-                                                <option selected value='2'>Cách ly</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ";
-                        }
-                        echo "
-                            <input type='submit' value='Áp dụng' name='btn' class='whi-color btn scan-req-btn bg-pri-color mb-3'>
-                            </tbody></table></form>";
-                    }
-                
-                    break;
-                }
-                case "Tìm vị trí": {
-                    $findFolderName = $_POST["scan-location-input"];
-                    if ($findFolderName == "")
-                    {
-                        echo "Tên folder không được để trống";
-                    } else {
-                        $filesInDir = $p->findFolderLocation($findFolderName);
-                        $count = 0;
-                        echo "
-                            <table class='table table-striped w-75'>
-                                    <thead>
-                                        <tr>
-                                        <th scope='col'>STT</th>
-                                        <th scope='col'>Đường dẫn</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                        ";
-    
-                        foreach ($filesInDir as $filePath)
-                        {
-                            $count++;
-    
-                            echo "
-                                <tr>
-                                    <th scope='row'>{$count}</th>
-                                    <td>{$filePath}</td>
-                                    </tr>
-                                <tr>
-                            ";
-                        }
-                        echo "</tbody></table>";
-                    }
+                    <ul class="dashboard-sumary col-sm-9 d-flex justify-content-around flex-wrap align-content-center">
+                        <li class="dashboard-sumary-item">
+                            <span>
+                                Tổng số tệp:
+                            </span>
+                            <span id="total-file">
                                 
-                    break;
-                }
-                case "Áp dụng": {
-                    $inputFile = $_POST["action-file-location"];
-                    $action = $_POST["action-file-chose"];
-                    $p->quaranFile($inputFile, $action);
-                    break;
-                }
-            }
-        }
-    ?>
-    
+                            </span>
+                        </li>
+                        <li class="dashboard-sumary-item">
+                            <span>
+                                Số Webshell: 
+                            </span>
+                            <span id="shell-file">
+                                
+                            </span>
+                        </li>
+                        <li class="dashboard-sumary-item">
+                            <span>
+                                Số tệp cách ly: 
+                            </span>
+                            <span id="quarant-file">
+                                
+                            </span>
+                        </li>
+                        <li class="dashboard-sumary-item">
+                            <span>
+                                Thời gian quét:
+                            </span>
+                            <span  id="scan-time">
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="p-2 ">
+                <h5 class="chart-title text-uppercase font-weight-bold">
+                    Lịch sử quét
+                </h5>
+                <canvas id="lineChart" height="20vw" width="100vw"></canvas>
+            </div>
+            </div>
+        </div>
     </div>
+    <?php 
+        include_once ("./class/clsScan.php");
+        $clsScan = new clsScan();
+        $clsScan->getInfoDashboard();
+    ?>
 </body>
 </html>

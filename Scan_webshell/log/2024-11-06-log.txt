@@ -1,0 +1,1 @@
+[2024-11-06 15:57:54] Move "../Scan_webshell/pattern/03b06b4183cb9947ccda2c3d636406d4.php.txt" to "./quarantine/1730908674-03b06b4183cb9947ccda2c3d636406d4.php.txt.txt"

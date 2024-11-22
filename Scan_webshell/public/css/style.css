@@ -17,6 +17,9 @@
     background-color: #614eed!important;
 }
 
+.cursor_point {
+    cursor: pointer!important;
+}
 /* Form input */
 .scan-req-box
 {
@@ -48,3 +51,20 @@
 .scan-req-btn:hover {
     background-color: #7b6de7!important;
 }
+
+#pieChart {
+    height: 256px !important;
+}
+
+.dashboard-sumary-item {
+    list-style: none;
+    line-height: 60px;
+    max-height: 100px;
+    width: 400px;
+    max-width: 40%;
+    background-color: antiquewhite;
+    padding: 20px;
+    margin: 10px;
+    font-size: 22px;
+    font-weight: bold;
+  }
