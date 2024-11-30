@@ -81,5 +81,71 @@
             }
             return -1;
         }
+
+        public function addResultScan ($location)
+        {
+            $query = "INSERT INTO ketquaquet  (ViTriQuet)  VALUES (?)";
+            $resultExec = $this->execRequestDB($query, $location);
+            if ($resultExec)
+            {
+                return 0;
+            }
+
+            return -1;
+        }
+
+        public function getLastScanId ()
+        {
+            $query = "SELECT MaQuet FROM ketquaquet ORDER BY MaQuet DESC LIMIT 1";
+            $resultExec = $this->execRequestDB($query);
+
+            $numRow = mysqli_num_rows($resultExec);
+            if ($numRow > 0) {
+                while ($row = mysqli_fetch_assoc($resultExec)) {
+                    return $row["MaQuet"];
+                }
+            }
+
+            return -1;
+        }
+
+        public function addFileList (&$files)
+        {
+            $query = "
+                INSERT INTO tep
+                    (TenTep, KichThuoc, LoaiTep, ViTriTep, MaBam)
+                    VALUES (?, ?, ?, ?, ?);";
+
+            foreach ($files as $file)
+            {
+                $fileInfo = pathinfo($file->filePath);
+                $directory = $fileInfo['dirname'] . DIRECTORY_SEPARATOR;
+                $fileName = $fileInfo['basename'];
+                $fileExt = $fileInfo['extension'];
+
+                $maTep = $this->execRequesFiletDB($query, $fileName, $file->size, $fileExt, $directory, $file->SHA256Hash);
+                if ($maTep > 0)
+                {
+                    $file->setMaTep($maTep);
+                } else {
+                    return -1;
+                }
+            }
+            
+            return 0;
+        }
+
+        public function addDetailScan ()
+        {
+            $idScan = $this->getLastScanId();
+            $query = "INSERT INTO ketquaquet  (NguoiThucHien, ViTriQuet)  VALUES (9, ?)";
+            $resultExec = $this->execRequestDB($query, $location);
+            if ($resultExec)
+            {
+                return 0;
+            }
+
+            return -1;
+        }
     }
 ?>

@@ -28,20 +28,6 @@
     padding: 16px;
 }
 
-.scan-req-form
-{
-
-}
-
-.scan-location-label
-{
-
-}
-
-.scan-req-input
-{
-}
-
 .scan-req-btn
 {
     color: white;
@@ -67,4 +53,61 @@
     margin: 10px;
     font-size: 22px;
     font-weight: bold;
-  }
+}
+
+/* Form upload */
+.upload-file
+{
+	text-align: center;
+	padding: 60px;
+}
+
+.form-upload
+{
+	border: 3px dashed #614eed;
+	height: 350px;
+	margin-top: 15px;
+}
+
+.icon-upload
+{
+	text-align: center;
+    width: 216px;
+}
+
+.icon-upload path {
+    fill: #9f95ed;
+	font-size: 70px;
+}
+
+.file-upload
+{
+	display: none;
+}
+
+.frm-upload
+{
+	margin-top: 20px;
+}
+
+.btn-upload 
+{
+    display: block;
+    height: 100%;
+    cursor: pointer;
+}
+
+.btn-submit
+{
+	background-color: #614eed;
+	color: white;
+    width: 200px;
+    padding: 10px;
+}
+
+.btn-submit:hover
+{
+	background-color: #8274f2;
+	color: white;
+}
+

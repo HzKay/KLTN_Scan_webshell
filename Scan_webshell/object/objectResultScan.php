@@ -1,6 +1,7 @@
 <?php 
     class ObjectResultScan 
     {
+        public $maTep;
         public $tenTep;
         public $viTri;
         public $ngayTaiLen;
@@ -16,6 +17,17 @@
             $this->maBam = $maBam;
             $this->ketQua = $ketQua;
             $this->hanhDong = $hanhDong;
+            $this->maTep = 0;
+        }
+
+        public function getMaTep ()
+        {
+            return $this->maTep;
+        }
+
+        public function setMaTep($maTep)
+        {
+            $this->maTep = $maTep;
         }
 
         public function getTenTep ()

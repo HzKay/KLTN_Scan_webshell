@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./public/css/style.css">
     <link rel="stylesheet" href="./public/css/bootstrap.css">
     <link rel="stylesheet" href="./public/css/bootstrap.min.css">
-    <title>Dashboard</title>
+    <link rel="stylesheet" href="./public/css/style.css">
+    <title>Upload</title>
     <script src="./public/js/script.js"></script>
     <script src="./public/js/chart.js"></script>
     <script src="./public/js/jquery-3.6.1.min.js"></script>
@@ -24,33 +24,16 @@
                 </ul>
             </div>
             <div class="col-sm-10 p-4">
-                <h4 class="h4 font-weight-bold text-center mb-2">CÀI ĐẶT</h4>
-                <?php
-                    include_once ("./class/clsUpload.php");
-                    $setting = new clsUpload();
-
-                    if (isset($_POST["btn"]))
-                    {
-                        $button = $_POST["btn"];
-                        switch ($button)
-                        {
-                            case "btn-setup":{
-                                $size = $_POST["txtMaxSize"];
-                                $fileExt = $_POST["txtFileExt"];
-                                if(isset($_POST["useModel"]))
-                                {
-                                    $useModel = 1;
-                                } else {
-                                    $useModel = 0;
-                                }
-                                $setting->updateSetting($size, $fileExt, $useModel);
-                                $setting->showSetting();
-                            }
-                        }
-                    } else {
-                        $setting->showSetting();
-                    }
-                ?>
+                <div class="container d-flex justify-content-center align-items-center flex-wrap">
+                    <div class="scan-req-box">
+                        <?php
+                            require_once('./class/clsUpload.php');
+                            $upload = new clsUpload();
+                            $upload->showFormUpload();
+                            $upload->uploadFile();
+                        ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

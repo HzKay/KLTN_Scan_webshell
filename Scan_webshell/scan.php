@@ -18,6 +18,7 @@
             <div class="col-sm-2">
                 <ul class="list-group list-group-flush p-3">
                     <li class="list-group-item list-group-action"><a class="nav-link active" href="./index.php">Dashboard</a></li>
+                    <li class="list-group-item list-group-action"><a class="nav-link" href="./upload.php">Upload</a></li>
                     <li class="list-group-item list-group-action"><a class="nav-link" href="./scan.php">Quét</a></li>
                     <li class="list-group-item list-group-action"><a class="nav-link" href="./setting.php">Cài đặt</a></li>
                 </ul>
@@ -41,7 +42,7 @@
                             <div class="progress-bar" id="scan-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
-                    <?php
+                    <?php    
                         include("./class/clsScan.php");
                         $p = new clsScan();
 
@@ -99,155 +100,8 @@
             </div>
         </div>
     </div>
-    <script>
-        const btnScan = document.getElementById('scan-btn');
-        const progressBox = document.getElementById('progress-box');
-        const progressBar = document.getElementById('scan-progress-bar');
-        const result = document.getElementById('result');
-        
-        btnScan.addEventListener("click", sendRequest);
-
-        function updateProgress()
-        {
-            progressBox.classList.remove('invisible');
-            fetch(`./progress.json?nocache=${new Date().getTime()}`, {
-                    method: 'GET'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json(); // Parse JSON từ phản hồi
-            })
-            .then(data => {
-                const percent = data[0]?.percent || 0;
-
-                progressBar.setAttribute('aria-valuenow', percent);
-                progressBar.style.width = percent + '%';
-                progressBar.innerHTML = percent + '%';
-
-                if (percent >= 100) {
-                    getResultScan();
-                }else {
-                    setTimeout(updateProgress, 700);
-                }
-            })
-            .catch(error => {
-                console.error('Có lỗi xảy ra:', error);
-            });
-        }
-
-        function getResultScan ()
-        {
-            const url = "./resultScan.php";
-            const formData = new FormData();
-            formData.append('btn', 'Lấy kết quả');
-
-            fetch(url, {
-                    method: 'POST',
-                    body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json(); 
-            })
-            .then(data => {
-                printResult(data);
-            })
-            .catch(error => {
-                console.error('Có lỗi xảy ra:', error);
-            });
-        }
-
-        function sendRequest (e)
-        {
-            if (document.getElementById('find-form-box'))
-            {
-                document.getElementById('find-form-box').classList.add("d-none");
-            } 
-            e.preventDefault();
-            const url = "./resultScan.php";
-            const scanLocation = document.getElementById('scan-location').value;
-            const formData = new FormData();
-            formData.append('scan-location-input', scanLocation);
-            formData.append('btn', 'Quét');
-            
-            fetch(url, {
-                method: 'POST',
-                body: formData
-            }).catch(() => {});
-            updateProgress();
-        }      
-
-        function printResult(files)
-        { 
-            let resultHtml = `<form method='POST' class='form-group'>
-                        <table class='table table-striped'>
-                            <thead>
-                                <tr>
-                                <th scope='col'>STT</th>
-                                <th scope='col'>Đường dẫn</th>
-                                <th scope='col'>Kết quả</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
-            let numFile = files.length;
-
-            if (numFile <= 0)
-            {
-                resultHtml += `<tr><td colspan="3" class="text-center">Không tìm thấy webshell</td></tr>`;
-            } else {
-                for (let i=0; i < numFile; i++)
-                {
-                    let number = i+1;
-                    resultHtml += `<tr class='cursor_point' data-toggle='collapse' data-target='#details${number}' aria-expanded='false' aria-controls='details${number}'>
-                                    <th scope='row'>${number}</th>
-                                    <td>${files[i].filePath}</td>
-                                    <td>${files[i].type}</td> 
-                                </tr>
-                                <tr class='collapse' id='details${number}'>
-                                    <td colspan='3'>
-                                        <div class='card p-3'>
-                                            <div class='mb-2'><strong>Hash:</strong> ${files[i].SHA256Hash}</div>
-                                            <div class='mb-2'><strong>Size:</strong> ${files[i].size}</div>
-                                            <div class='mb-2'><strong>Signature:</strong> </div>
-                                            <table class='table table-sm table-bordered'>
-                                                <thead class='table-light'>
-                                                    <tr>
-                                                        <th scope='col'>Chữ ký</th>
-                                                        <th scope='col'>Vị trí</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>`;
-                    for (let j=0; j < files[i].signature.length; j++)
-                    {
-                        resultHtml += `<tr>
-                            <td>${files[i].signature[j][0]}</td>
-                            <td>${files[i].signature[j][1]}</td>
-                        </tr>`;
-                    }
-    
-                    resultHtml += `</tbody></table><div class='row'>
-                                            <input name='action-file-location[]' value='${files[i].filePath}' hidden>
-                                            <label for='action-file${number}' class='col-sm-5 col-form-label'>Hành động</label>
-                                            <select id='action-file${number}' name='action-file-chose[]' class='cursor_point form-select col-sm-5'>
-                                                <option value='1'>Cho phép</option>
-                                                <option selected value='2'>Cách ly</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>`;
-                }
-                
-                resultHtml += `<input type='submit' value='Áp dụng' name='btn' class='whi-color btn scan-req-btn bg-pri-color mb-3'>`;
-            }
-            
-            const endHtml = `</tbody></table></form>`;
-            result.innerHTML = resultHtml;
-        }
-    </script>
+    <?php
+        $p->showJsScanBtn();
+    ?>
 </body>
 </html>

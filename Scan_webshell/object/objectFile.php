@@ -1,5 +1,7 @@
 <?php 
     class ObjectFile {
+        
+        public $maTep;
         public $filePath;
         public $size;
         public $type;
@@ -12,6 +14,16 @@
             $this->type = $type;
             $this->SHA256Hash = $SHA256Hash;
             $this->signature = $signature;
+            $this->maTep = 0;
+        }
+        public function getMaTep ()
+        {
+            return $this->maTep;
+        }
+
+        public function setMaTep($maTep)
+        {
+            $this->maTep = $maTep;
         }
 
         public function getFilePath() {

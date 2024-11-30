@@ -10,7 +10,6 @@
         public function updateProgress() {
             $data = array();
             $percent = 0;
-
             // Lấy tổng số file đã quét được
             $totalFiles = $this->getTotalFiles();
             // Lấy số file đã kiểm tra hiện tại
@@ -22,7 +21,6 @@
             }
 
             $data[] = array("total"=>$totalFiles, "current"=>$currentFile, "percent"=>$percent);
-
             file_put_contents('progress.json', json_encode($data)); // Lưu tiến trình vào file
         }
 
@@ -34,33 +32,33 @@
 
         public function getTotalFiles ()
         {
-            return $_SESSION['totalFiles'];
+            return $_SESSION["totalFiles"];
         }
 
         public function setTotalFiles ($totalFiles)
         {
-            $_SESSION['totalFiles'] = $totalFiles;
+            $_SESSION["totalFiles"] = $totalFiles;
         }
 
         public function getCurrentProcess ()
         {
-            return $_SESSION['currentProcess'];
+            return $_SESSION["currentProcess"];
         }
 
         public function setCurrentProcess ($now)
         {
-            $_SESSION['currentProcess'] = $now;
+            $_SESSION["currentProcess"] = $now;
             $this->updateProgress();
         }
         
         public function getScanLocation ()
         {
-            return $_SESSION['scanLocation'];
+            return $_SESSION["scanLocation"];
         }
 
         public function setScanLocation ($location)
         {
-            $_SESSION['scanLocation'] = $location;
+            $_SESSION["scanLocation"] = $location;
         }
 
     }

@@ -72,6 +72,52 @@
             return mysqli_stmt_errno($stmt);
         }
 
+        public function execRequesFiletDB ($query, ...$vars)
+        {
+            $conn = $this->connectDB();
+            $stmt = mysqli_prepare($conn, $query);
+            $typeVarList = "";
+
+            if (!empty($vars)) {
+                foreach ($vars as $var)
+                {
+                    $typeVar = gettype($var);
+                    
+                    switch($typeVar)
+                    {
+                        case "":
+                            $typeVar = "d";
+                            break;
+                        case "integer":
+                            $typeVar = "i";
+                            break;
+                        case "string":
+                            $typeVar = "s";
+                            break;
+                        case "boolean":
+                            $typeVar = "b";
+                            break;
+                    }
+    
+                    $typeVarList = $typeVarList . $typeVar;
+                }
+
+                mysqli_stmt_bind_param($stmt, $typeVarList, ...$vars);
+            }            
+
+            $isExecSuccess = mysqli_stmt_execute($stmt);
+            $isError = mysqli_stmt_errno($stmt);
+
+            if ($isExecSuccess && $isError==0) {
+                $maTep = mysqli_insert_id($conn);
+                return $maTep;
+            }
+            
+            $this->closeConnectDB($conn);
+            return mysqli_stmt_errno($stmt);
+        }
+        
+
         private function closeConnectDB($conn)
         {
             mysqli_close($conn);

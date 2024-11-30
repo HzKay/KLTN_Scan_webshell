@@ -1,0 +1,7 @@
+[2024-11-23 20:30:16] Move "C:\laragon\www\KLTN\Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732393816-03b06b4183cb9947ccda2c3d636406d4.php.txt"
+[2024-11-23 20:52:44] Move "Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732395164-03b06b4183cb9947ccda2c3d636406d4.php.txt"
+[2024-11-23 20:55:12] Move "Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732395312-03b06b4183cb9947ccda2c3d636406d4.php.txt"
+[2024-11-23 20:55:48] Move "Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732395348-03b06b4183cb9947ccda2c3d636406d4.php.txt"
+[2024-11-23 20:56:28] Move "Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732395388-03b06b4183cb9947ccda2c3d636406d4.php.txt"
+[2024-11-23 21:04:57] Move "C:\laragon\www\KLTN\Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732395897-03b06b4183cb9947ccda2c3d636406d4.php.txt"
+[2024-11-23 21:13:01] Move "Scan_webshell\pattern\normal\03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1732396381-03b06b4183cb9947ccda2c3d636406d4.php.txt"

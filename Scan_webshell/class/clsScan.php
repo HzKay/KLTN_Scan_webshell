@@ -4,6 +4,7 @@
     {
         private $noDisplay = array(".", "..",);
         private $path = "../";
+        private $basePath = "";
         private $quaranFolder = "./quarantine/";
         private $logFolder = "./log/";
         private $errorList = array(
@@ -80,19 +81,32 @@
             return $filesInDir;
         }
 
-        function getFullPath($dir) {
-            $files = [];
-        
+        public function makeFitFilePath ($filePath)
+        {
+            $search = array('\\', '/');
+            $newFilePath = str_replace($search, DIRECTORY_SEPARATOR, $filePath);
+            return $newFilePath;
+        }
+
+        public function getFullPath($dir) {
+            $files = array();
+            
+
+            $baseDirectory = dirname(dirname(__DIR__));
+            $this->basePath = $baseDirectory . DIRECTORY_SEPARATOR;
+            $realPath = $this->basePath . $dir;
+            $realPath = $this->makeFitFilePath($realPath);
+            
             // Sử dụng RecursiveDirectoryIterator để duyệt thư mục
-            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-        
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($realPath));
+            
             foreach ($iterator as $file) {
                 // Chỉ lấy các tệp, bỏ qua các thư mục
                 if (is_File($file)) {
-                    $files[] = str_replace('\\', '/', $file->getPathname());
+                    $files[] = $file->getPathname();
                 }
             }
-        
+
             return $files;
         }
         
@@ -101,7 +115,6 @@
             $newUrl = $this->path .$url;
             $isValidUrl = $this->checkValidUrl($newUrl);
             $isValidLocation = $this->checkValidFolderLocation($url);
-
             $errorCode = -1;
 
             if ($isValidUrl != 1)
@@ -126,10 +139,9 @@
         public function getAllFiles ($url)
         {
             $errorCode = $this->checkUrlInput($url);
-            $newUrl = $this->path . $url;
-
+    
             if ($errorCode == -1) {
-                $filesInDir = $this->getFullPath($newUrl);
+                $filesInDir = $this->getFullPath($url);
                 return $filesInDir;
             }
 
@@ -153,13 +165,18 @@
             return $directories;
         }
 
-        public function normalizePath ($folderList)
+        public function normalizePath ($folderList, $mode = 1)
         {
             $result = array();
 
             foreach ($folderList as $item)
             {
-                $result[] = substr($item, 3);
+                if ($mode == 1) 
+                {
+                    $result[] = substr($item, 3);
+                } else {
+                    $result[] = str_replace($this->basePath, '', $item);
+                }
             }
 
             return $result;
@@ -197,7 +214,7 @@
             //  Khởi tạo đối tượng Signatures
             $p = new Signatures();
            
-            $fileContent = $this->getFileContent($file);
+            $fileContent = $this->getFileContent(filePath: $file);
 
             if ($fileContent === false) {
                 return -1;
@@ -209,9 +226,13 @@
                 $reg = '#' . $sign . '#smiS';
                 $result = preg_match_all($reg, $fileContent, $ouput, PREG_OFFSET_CAPTURE);
 
-                foreach ($ouput[0] as $oup)
+                if ($result >= 0)
                 {
-                    $signList[] =  $oup;
+                    foreach ($ouput[0] as $oup)
+                    {
+                        $oup[0] = htmlspecialchars($oup[0],ENT_QUOTES);
+                        $signList[] =  $oup;
+                    }
                 }
             }
 
@@ -282,12 +303,13 @@
 
         public function checkFilesContent ($filePath)
         {
+            include_once("./object/objectFile.php");
             $newFilePath = array();
             $originalFilePath = $this->getAllFiles($filePath);
             $currentFile = 0;
             
             if (gettype($originalFilePath)  == "string")
-            {
+            { 
                 echo $originalFilePath;
                 die();
             }
@@ -297,10 +319,10 @@
 
             foreach ($originalFilePath as $file)
             {
-                include_once("./object/objectFile.php");
                 $objectFile = new ObjectFile();
                 $hashFile = $this->createHashCode($file);
-                $isAvail = $this->findHashInDB($hashFile);
+                // $isAvail = $this->findHashInDB($hashFile);
+                $isAvail = -1;
                 $currentFile++;
 
                 if ($isAvail != -1) {
@@ -317,17 +339,21 @@
                         $type = "Webshell";
                         $newFilePath[] = $file;                        
                     }
-                    
-                    $objectFile->setInfo($file, $fileSize, $type, $hashFile, $signList);  
+                    $filePath = str_replace($this->basePath, '', $file);
+
+                    $objectFile->setInfo($filePath, $fileSize, $type, $hashFile, $signList);  
                     $this->storeFiles($objectFile, $numSign);
                 }  
                 
                 $this->setCurrentProcess($currentFile);
             }
 
-            $this->fileListGlobal = $this->normalizePath($newFilePath);            
+            $this->fileListGlobal = $this->normalizePath($newFilePath, 0);      
+            $this->test();      
             return $this->webshellList;
         }        
+
+
 
         public function quaranFile($fileList, $action)
         {
@@ -342,10 +368,13 @@
                     $filePath = $fileList[$index];
                     $filePathSplit = preg_split('#[\\\\/]+#', $filePath);
                     $fileName = end($filePathSplit);
-        
+                    $fileLocation = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $filePath;
+                    $fileLocation = $this->makeFitFilePath($fileLocation);
+                    
                     // Cách ly file (quarantine file)
                     $newLocation = $this->quaranFolder . time() . "-" . $fileName . ".txt";
-                    $isMove = rename($filePath, $newLocation);
+                    
+                    $isMove = rename($fileLocation, $newLocation);
                     $isLog = $this->addLogFile($filePath, $newLocation);
         
                     if ($isLog == 0)
@@ -527,13 +556,170 @@
             ";
         }
 
-        
+        public function showJsScanBtn () 
+        {
+            echo '<script>
+                    const btnScan = document.getElementById("scan-btn");
+                    const progressBox = document.getElementById("progress-box");
+                    const progressBar = document.getElementById("scan-progress-bar");
+                    const result = document.getElementById("result");
+                    
+                    btnScan.addEventListener("click", sendRequest);
 
-        // Tesst -----------------------------------------------------------------------------------
-        
+                    function updateProgress()
+                    {
+                        progressBox.classList.remove("invisible");
+                        fetch(`./getValueProgress.php`, {
+                                method: "GET",
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json(); // Parse JSON từ phản hồi
+                        })
+                        .then(data => {
+                            const percent = data[0]?.percent || 0;
+
+                            progressBar.setAttribute("aria-valuenow", percent);
+                            progressBar.style.width = percent + "%";
+                            progressBar.innerHTML = percent + "%";
+
+                            if (percent >= 100) {
+                                getResultScan();
+                            }else {
+                                setTimeout(updateProgress, 700);
+                            }
+                        })
+                        .catch(error => {
+                            setTimeout(updateProgress, 700);
+                        });
+                    }
+
+                    function getResultScan ()
+                    {
+                        const url = "./resultScan.php";
+                        const formData = new FormData();
+                        formData.append("btn", "Lấy kết quả");
+
+                        fetch(url, {
+                                method: "POST",
+                                body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json(); 
+                        })
+                        .then(data => {
+                            printResult(data);
+                        })
+                        .catch(error => {
+                            setTimeout(getResultScan, 500);
+                        });
+                    }
+
+                    function sendRequest (e)
+                    {
+                        if (document.getElementById("find-form-box"))
+                        {
+                            document.getElementById("find-form-box").classList.add("d-none");
+                        } 
+                        e.preventDefault();
+                        const url = "./resultScan.php";
+                        const scanLocation = document.getElementById("scan-location").value;
+                        const formData = new FormData();
+                        formData.append("scan-location-input", scanLocation);
+                        formData.append("btn", "Quét");
+                        
+                        fetch(url, {
+                            method: "POST",                               
+                            mode: "no-cors",
+                            body: formData
+                        }).catch(() => {});
+                        updateProgress();
+                    }      
+
+                    function printResult(files)
+                    { 
+                        let resultHtml = `<form method="POST" class="form-group">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                            <th scope="col">STT</th>
+                                            <th scope="col">Đường dẫn</th>
+                                            <th scope="col">Kết quả</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+                        let numFile = files.length;
+                        
+                        if (numFile <= 0)
+                        {
+                            resultHtml += `<tr><td colspan="3" class="text-center">Không tìm thấy webshell</td></tr>`;
+                        } else {
+                            for (let i=0; i < numFile; i++)
+                            {
+                                let number = i+1;
+                                resultHtml += `<tr class="cursor_point" data-toggle="collapse" data-target="#details${number}" aria-expanded="false" aria-controls="details${number}">
+                                                <th scope="row">${number}</th>
+                                                <td>${files[i].filePath}</td>
+                                                <td>${files[i].type}</td> 
+                                            </tr>
+                                            <tr class="collapse" id="details${number}">
+                                                <td colspan="3">
+                                                    <div class="card p-3">
+                                                        <div class="mb-2"><strong>Hash:</strong> ${files[i].SHA256Hash}</div>
+                                                        <div class="mb-2"><strong>Size:</strong> ${files[i].size}</div>
+                                                        <div class="mb-2"><strong>Signature:</strong> </div>
+                                                        <table class="table table-sm table-bordered">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th scope="col">Chữ ký</th>
+                                                                    <th scope="col">Vị trí</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>`;
+                                for (let j=0; j < files[i].signature.length; j++)
+                                {
+                                    resultHtml += `<tr>
+                                        <td>${files[i].signature[j][0]}</td>
+                                        <td>${files[i].signature[j][1]}</td>
+                                    </tr>`;
+                                }
+                
+                                resultHtml += `</tbody></table><div class="row">
+                                                        <input name="action-file-location[]" value="${files[i].filePath}" hidden>
+                                                        <label for="action-file${number}" class="col-sm-5 col-form-label">Hành động</label>
+                                                        <select id="action-file${number}" name="action-file-chose[]" class="cursor_point form-select col-sm-5">
+                                                            <option value="1">Cho phép</option>
+                                                            <option selected value="2">Cách ly</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>`;
+                            }
+                            
+                            resultHtml += `<input type="submit" value="Áp dụng" name="btn" class="whi-color btn scan-req-btn bg-pri-color mb-3">`;
+                        }
+                        
+                        const endHtml = `</tbody></table></form>`;
+                        result.innerHTML = resultHtml;
+                    }
+                </script>';
+        }
     
+        // Tesst -----------------------------------------------------------------------------------
+        public function test ()
+        {
+            require_once("./model/mScan.php");
 
+            $mScan = new mScan();
 
+            $mScan->addFileList($this->webshellList);
+        }
         
         // Tesst -----------------------------------------------------------------------------------
     }

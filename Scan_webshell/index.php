@@ -18,6 +18,7 @@
             <div class="col-sm-2">
                 <ul class="list-group list-group-flush p-3">
                     <li class="list-group-item list-group-action"><a class="nav-link active" href="./index.php">Dashboard</a></li>
+                    <li class="list-group-item list-group-action"><a class="nav-link" href="./upload.php">Upload</a></li>
                     <li class="list-group-item list-group-action"><a class="nav-link" href="./scan.php">Quét</a></li>
                     <li class="list-group-item list-group-action"><a class="nav-link" href="./setting.php">Cài đặt</a></li>
                 </ul>
