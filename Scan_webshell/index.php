@@ -6,21 +6,20 @@
     <link rel="stylesheet" href="./public/css/style.css">
     <link rel="stylesheet" href="./public/css/bootstrap.css">
     <link rel="stylesheet" href="./public/css/bootstrap.min.css">
-    <title>Dashboard</title>
-    <script src="./public/js/script.js"></script>
+    <title>Trang chủ</title>
     <script src="./public/js/chart.js"></script>
-    <script src="./public/js/jquery-3.6.1.min.js"></script>
+    <script src="./public/js/jquery-3.6.4.min.js"></script>
     <script src="./public/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container-xxl">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-sm-2">
                 <ul class="list-group list-group-flush p-3">
-                    <li class="list-group-item list-group-action"><a class="nav-link active" href="./index.php">Dashboard</a></li>
-                    <li class="list-group-item list-group-action"><a class="nav-link" href="./upload.php">Upload</a></li>
-                    <li class="list-group-item list-group-action"><a class="nav-link" href="./scan.php">Quét</a></li>
-                    <li class="list-group-item list-group-action"><a class="nav-link" href="./setting.php">Cài đặt</a></li>
+                    <li class="list-group-item list-group-action sidebar-menu"><a class="nav-link active" href="./index.php">Dashboard</a></li>
+                    <li class="list-group-item list-group-action sidebar-menu"><a class="nav-link" href="./upload.php">Tải lên</a></li>
+                    <li class="list-group-item list-group-action sidebar-menu"><a class="nav-link" href="./scan.php">Quét</a></li>
+                    <li class="list-group-item list-group-action sidebar-menu"><a class="nav-link" href="./setting.php">Cài đặt</a></li>
                 </ul>
             </div>
             <div class="col-sm-10 p-4">

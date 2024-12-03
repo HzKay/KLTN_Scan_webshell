@@ -5,6 +5,10 @@
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
+.mw-80 {
+    min-width: 80%;
+}
+
 .pri-color {
 	color: #614eed!important;
 }
@@ -23,7 +27,7 @@
 /* Form input */
 .scan-req-box
 {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
     padding: 16px;
 }
@@ -55,22 +59,34 @@
     font-weight: bold;
 }
 
+.sidebar-menu {
+    padding: 14px 8px 22px 0!important;
+}
+
+.sidebar-menu .nav-link {
+    border-radius: 8px!important;
+    display: block;
+    padding: 10px 10px;
+}
+
+.sidebar-menu .active {
+    background-color: #614eed!important;
+    color: #fff!important;
+}
+
 /* Form upload */
-.upload-file
-{
+.upload-file {
 	text-align: center;
 	padding: 60px;
 }
 
-.form-upload
-{
+.form-upload {
 	border: 3px dashed #614eed;
 	height: 350px;
 	margin-top: 15px;
 }
 
-.icon-upload
-{
+.icon-upload {
 	text-align: center;
     width: 216px;
 }
@@ -80,34 +96,40 @@
 	font-size: 70px;
 }
 
-.file-upload
-{
+.file-upload {
 	display: none;
 }
 
-.frm-upload
-{
+.frm-upload {
 	margin-top: 20px;
 }
 
-.btn-upload 
-{
+.btn-upload {
     display: block;
     height: 100%;
     cursor: pointer;
 }
 
-.btn-submit
-{
+.btn-submit {
 	background-color: #614eed;
 	color: white;
     width: 200px;
     padding: 10px;
 }
 
-.btn-submit:hover
-{
+.btn-submit:hover {
 	background-color: #8274f2;
 	color: white;
 }
 
+.action-btn svg {
+    width: 18px;
+    fill: #614eed;
+}
+
+
+#sync-btn svg {
+    fill: #fff;
+    width: 22px;
+    margin-right: 10px;
+}

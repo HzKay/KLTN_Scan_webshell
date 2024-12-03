@@ -1,0 +1,1 @@
+[2024-12-03 11:57:23] Move "Scan_webshell\pattern\New Text Document.txt" to "./quarantine/1733227043-New Text Document.txt.txt"

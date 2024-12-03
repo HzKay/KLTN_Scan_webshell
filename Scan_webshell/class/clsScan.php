@@ -209,28 +209,24 @@
 
         public function validFileContent ($file)
         {
-            include_once("./class/clsSign.php"); 
-            
-            //  Khởi tạo đối tượng Signatures
-            $p = new Signatures();
-           
+            require_once ('./model/mScan.php');
+            $databse = new mScan();          
+            $signs = $databse->getAllSigns();
             $fileContent = $this->getFileContent(filePath: $file);
 
             if ($fileContent === false) {
                 return -1;
             }
 
-            $temp = $p->getAll();
             $signList = array();
-            foreach($temp as $sign) {
-                $reg = '#' . $sign . '#smiS';
-                $result = preg_match_all($reg, $fileContent, $ouput, PREG_OFFSET_CAPTURE);
+            foreach($signs as $sign) {
+                $result = preg_match_all($sign, $fileContent, $ouput, PREG_OFFSET_CAPTURE);
 
                 if ($result >= 0)
                 {
                     foreach ($ouput[0] as $oup)
                     {
-                        $oup[0] = htmlspecialchars($oup[0],ENT_QUOTES);
+                        $oup[0] = htmlspecialchars($oup[0],ENT_QUOTES, 'UTF-8');
                         $signList[] =  $oup;
                     }
                 }
@@ -339,17 +335,17 @@
                         $type = "Webshell";
                         $newFilePath[] = $file;                        
                     }
-                    $filePath = str_replace($this->basePath, '', $file);
+                    $fileLocation = str_replace($this->basePath, '', $file);
 
-                    $objectFile->setInfo($filePath, $fileSize, $type, $hashFile, $signList);  
+                    $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, $signList);  
                     $this->storeFiles($objectFile, $numSign);
                 }  
                 
                 $this->setCurrentProcess($currentFile);
             }
-
+            
             $this->fileListGlobal = $this->normalizePath($newFilePath, 0);      
-            $this->test();      
+            $this->addDataScan($filePath);      
             return $this->webshellList;
         }        
 
@@ -441,7 +437,7 @@
 
             while ($result = mysqli_fetch_array($resultScan))
             {             
-                $scanRecent[] = new ObjectResultScan($result["TenTep"], $result["ViTriTep"], $result["NgayTaiLen"], $result["MaBam"], $result["KetQua"], $result["HanhDong"]);
+                $scanRecent[] = new ObjectResultScan($result["TenTep"], $result["ViTriTep"], $result["MaBam"], $result["KetQua"], $result["HanhDong"]);
             }
 
             return $scanRecent;
@@ -569,7 +565,7 @@
                     function updateProgress()
                     {
                         progressBox.classList.remove("invisible");
-                        fetch(`./getValueProgress.php`, {
+                        fetch(`./getValue.php`, {
                                 method: "GET",
                         })
                         .then(response => {
@@ -641,85 +637,173 @@
                         updateProgress();
                     }      
 
-                    function printResult(files)
-                    { 
-                        let resultHtml = `<form method="POST" class="form-group">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                            <th scope="col">STT</th>
-                                            <th scope="col">Đường dẫn</th>
-                                            <th scope="col">Kết quả</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>`;
-                        let numFile = files.length;
+                    function getFileContent (id)
+                    {
+                        const url = "./resultScan.php";
+                        const scanLocation = document.getElementById("scan-location").value;
+                        const showContent = document.getElementById("contentFile");
+                        const modelBox = document.getElementById("content-file-box");
+                        const formData = new FormData();
+                        formData.append("idFile", id);
+                        formData.append("btn", "Lấy nội dung");
                         
-                        if (numFile <= 0)
-                        {
+                        fetch(url, {
+                            method: "POST",      
+                            body: formData
+                        }).then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.text(); 
+                        })
+                        .then(htmlContent => {
+                            showContent.innerHTML = htmlContent; 
+                            const myModal = new bootstrap.Modal(modelBox);
+                            myModal.show();
+                        })
+                        .catch(error => {
+                            console.error("Error fetching HTML content:", error);
+                        });
+                    }
+                    
+
+                    function printResult(files) { 
+                        let resultHtml = `<form method="POST" class="form-group">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">STT</th>
+                                                            <th scope="col">Đường dẫn</th>
+                                                            <th scope="col">Kết quả</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>`;
+                        let numFile = files.length;
+
+                        if (numFile <= 0) {
                             resultHtml += `<tr><td colspan="3" class="text-center">Không tìm thấy webshell</td></tr>`;
                         } else {
-                            for (let i=0; i < numFile; i++)
-                            {
-                                let number = i+1;
-                                resultHtml += `<tr class="cursor_point" data-toggle="collapse" data-target="#details${number}" aria-expanded="false" aria-controls="details${number}">
-                                                <th scope="row">${number}</th>
-                                                <td>${files[i].filePath}</td>
-                                                <td>${files[i].type}</td> 
-                                            </tr>
-                                            <tr class="collapse" id="details${number}">
-                                                <td colspan="3">
-                                                    <div class="card p-3">
-                                                        <div class="mb-2"><strong>Hash:</strong> ${files[i].SHA256Hash}</div>
-                                                        <div class="mb-2"><strong>Size:</strong> ${files[i].size}</div>
-                                                        <div class="mb-2"><strong>Signature:</strong> </div>
-                                                        <table class="table table-sm table-bordered">
-                                                            <thead class="table-light">
-                                                                <tr>
-                                                                    <th scope="col">Chữ ký</th>
-                                                                    <th scope="col">Vị trí</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>`;
-                                for (let j=0; j < files[i].signature.length; j++)
-                                {
+                            for (let i = 0; i < numFile; i++) {
+                                let number = i + 1;
+                                resultHtml += `<tr class="cursor-point" data-bs-toggle="collapse" data-bs-target="#details${number}" aria-expanded="false" aria-controls="details${number}">
+                                                    <th scope="row">${number}</th>
+                                                    <td>${files[i].filePath}</td>
+                                                    <td>${files[i].type}</td> 
+                                                </tr>
+                                                <tr class="collapse" id="details${number}">
+                                                    <td colspan="3 border-0">
+                                                        <div class="card p-3">
+                                                            <div class="mb-2"><strong>Hash:</strong> ${files[i].SHA256Hash}</div>
+                                                            <div class="mb-2"><strong>Size:</strong> ${files[i].size}</div>
+                                                            <div class="mb-2"><strong>Signature:</strong></div>
+                                                            <table class="table table-sm table-bordered">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th scope="col">Chữ ký</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>`;
+                                for (let j = 0; j < files[i].signature.length; j++) {
                                     resultHtml += `<tr>
-                                        <td>${files[i].signature[j][0]}</td>
-                                        <td>${files[i].signature[j][1]}</td>
-                                    </tr>`;
+                                                    <td  class="overflow-scroll">${files[i].signature[j][0]}</td>
+                                                </tr>`;
                                 }
-                
-                                resultHtml += `</tbody></table><div class="row">
-                                                        <input name="action-file-location[]" value="${files[i].filePath}" hidden>
-                                                        <label for="action-file${number}" class="col-sm-5 col-form-label">Hành động</label>
-                                                        <select id="action-file${number}" name="action-file-chose[]" class="cursor_point form-select col-sm-5">
+
+                                resultHtml += `</tbody></table>
+                                                <div class="row">
+                                                    <input name="action-file-location[]" value="${files[i].filePath}" hidden>
+                                                    <div class="col-sm-6 d-flex justify-content-between">
+                                                        <label for="action-file${number}" class="col-sm-2 col-form-label">Hành động</label>
+                                                        <select id="action-file${number}" name="action-file-chose[]" class="cursor-point form-select">
                                                             <option value="1">Cho phép</option>
                                                             <option selected value="2">Cách ly</option>
                                                         </select>
                                                     </div>
+                                                    <div class="col-sm-6 text-end">
+                                                        <span onclick="getFileContent(${i})" class="btn bg-pri-color whi-color">Xem nội dung</span>    
+                                                    </div>
                                                 </div>
-                                            </td>
-                                        </tr>`;
+                                            </div>
+                                        </td>
+                                    </tr>`;
                             }
-                            
-                            resultHtml += `<input type="submit" value="Áp dụng" name="btn" class="whi-color btn scan-req-btn bg-pri-color mb-3">`;
+
+                            resultHtml += `<input type="submit" value="Áp dụng" name="btn" class="btn btn-primary mb-3">`;
                         }
-                        
+
                         const endHtml = `</tbody></table></form>`;
+                        resultHtml += endHtml;
                         result.innerHTML = resultHtml;
                     }
+
                 </script>';
         }
     
-        // Tesst -----------------------------------------------------------------------------------
-        public function test ()
+        public function highlightText($content, $signList) {   
+            try {
+                $startHighLight = "<span style='background-color: yellow; font-weight: bold;'>";
+                $endHighLight = "</span>";
+                $startSignal = '@@@';
+                $endSignal = '###';
+                $temp = 0;
+        
+                usort($signList, function($a, $b) {
+                    return $a[1] <=> $b[1];
+                });
+
+                foreach ($signList as $sign)
+                {
+                    // Vị trí cần làm nổi
+                    $startPosition = $sign[1]+$temp;
+                    // Độ dài cần làm nổi
+                    $endPosition = $startPosition + strlen($sign[0]) + strlen($startSignal);
+        
+                    $content = substr_replace($content, $startSignal, $startPosition, 0);
+                    $content = substr_replace($content, $endSignal, $endPosition, 0);
+                    $temp += strlen($startSignal) + strlen($endSignal);
+                }
+                $content = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+        
+                
+                $content = str_replace($startSignal, $startHighLight, $content);
+                $content = str_replace($endSignal, $endHighLight, $content);
+        
+                return $content;
+            } catch (Exception $e) {
+                return false;
+            }
+        }
+
+        public function showContentFile ($files, $id)
+        {
+            $filePath = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $files[$id]->filePath;
+            $content = file_get_contents($filePath);
+            $content = $this->highlightText($content, $files[$id]->signature);
+
+            return $content;
+        }
+
+        public function addDataScan ($location)
         {
             require_once("./model/mScan.php");
 
             $mScan = new mScan();
 
-            $mScan->addFileList($this->webshellList);
+            $result = $mScan->addDataScan($location, $this->webshellList);
+            
+            switch ($result)
+            {
+                case -1:{
+                    echo "<scriptalert('Thêm dữ liệu quét vào cơ sở dữ liệu thất bại')</script>";
+                    break;
+                }
+                case -2:{
+                    echo "<scriptalert('Không tìm thấy mã quét')</script>";
+                    break;
+                }
+            }
         }
+        // Tesst -----------------------------------------------------------------------------------
         
         // Tesst -----------------------------------------------------------------------------------
     }

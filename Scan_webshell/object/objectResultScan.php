@@ -4,16 +4,14 @@
         public $maTep;
         public $tenTep;
         public $viTri;
-        public $ngayTaiLen;
         public $maBam;
         public $ketQua;
         public $hanhDong;
 
-        public function __construct($tenTep, $viTri, $ngayTaiLen, $maBam, $ketQua, $hanhDong)
+        public function __construct($tenTep, $viTri, $maBam, $ketQua, $hanhDong)
         {
             $this->tenTep = $tenTep;
             $this->viTri = $viTri;
-            $this->ngayTaiLen = $ngayTaiLen;
             $this->maBam = $maBam;
             $this->ketQua = $ketQua;
             $this->hanhDong = $hanhDong;
@@ -48,16 +46,6 @@
         public function setViTri ($viTri)
         {
             $this->viTri = $viTri;
-        }
-
-        public function getNgayTaiLen ()
-        {
-            return $this->ngayTaiLen;
-        }
-        
-        public function setNgayTaiLen ($ngayTaiLen)
-        {
-            $this->ngayTaiLen = $ngayTaiLen;
         }
 
         public function getMaBam ()

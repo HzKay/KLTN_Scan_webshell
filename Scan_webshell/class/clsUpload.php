@@ -1,10 +1,11 @@
 <?php 
     class clsUpload {
+        private $uploadFolder = "./upload/";
+
         public function showFormUpload ()
         {
           $formUpload = "
             <div>
-                <h4 class='h4 font-weight-bold text-center'>UPLOAD FILE</h4>
                 <div class='frm-upload text-center'>
                     <form action='' method='POST' enctype='multipart/form-data'>
                         <div class='form-upload'>
@@ -34,11 +35,59 @@
             echo $formUpload;
         }
 
+        public function showFilesUpload ()
+        {
+          $formUpload = "
+            <div>
+                <div class='frm-upload text-center'>
+                    <form action='' method='POST' enctype='multipart/form-data'>
+                        <div class='form-upload'>
+                            <input type='file' class='file-upload' id='file' name='file' onchange='showUpBtn()'>
+                            <label for='file' class='btn-upload'>
+                                <svg class='icon-upload mt-5' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'>
+                                    <path d='M537.6 226.6c4.1-10.7 6.4-22.4 6.4-34.6 0-53-43-96-96-96-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32c-88.4 0-160 71.6-160 160 0 2.7 .1 5.4 .2 8.1C40.2 219.8 0 273.2 0 336c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-61.9-44-113.6-102.4-125.4zM393.4 288H328v112c0 8.8-7.2 16-16 16h-48c-8.8 0-16-7.2-16-16V288h-65.4c-14.3 0-21.4-17.2-11.3-27.3l105.4-105.4c6.2-6.2 16.4-6.2 22.6 0l105.4 105.4c10.1 10.1 2.9 27.3-11.3 27.3z'/>
+                                </svg>
+                                <p class='mt-3' id='tenfile'>Bấm vào để chọn tệp</p>
+                            </label>
+                        </div>
+                        
+                        <label for='submitBtn' class='btn btn-submit mt-4' id='labelUpBtn'>Tải lên</label><br>
+                        <input type='submit' value='uploadBtn' hidden id='submitBtn' name='btn'>
+                    </form>
+                </div>
+            </div>
+            <script>
+                function showUpBtn() {
+                    let fileName = document.getElementById('tenfile');
+                    let inFile = document.getElementById('file').files[0].name; 
+                    
+                    fileName.innerHTML = inFile; 
+                }
+            </script>
+            ";
+            echo $formUpload;
+        }
+
+        public function getFilesUpload ()
+        {
+
+        }
+
         public function uploadFile () 
         {
-            if (isset($_POST['UPLOAD']))
+            if (isset($_POST['btn']) && $_POST['btn'] == 'uploadBtn')
             {
-                die('ok');
+                $file = $_FILES['file'];
+                var_dump($file);
+                die();
+                $isValidFile = $this->validateFile();
+
+                if ($isValidFile)
+                {
+
+                }
+                
+                return false;
             }
         }
 
@@ -82,10 +131,9 @@
             $extention = end(explode(".", $file['name']));
 
             $isValidExt = $this->validateFileExtent($extention, $setting["allowed_extentions"]);
-            $isValidType = $this->validateFileType($file['type'], $setting["allowed_file_type"]);
             $isValidSize = $this->validateFileSize($file['size'], $setting["maxsize"]);
 
-            if ($isValidExt == 1 &&  $isValidType == 1 && $isValidSize == 1)
+            if ($isValidExt == 1 && $isValidSize == 1)
             {
                 return true;
             }
@@ -98,7 +146,7 @@
             $content = "";
             $maxsize = $maxsize*1000;
             
-            $content = $content . "maxsize = '{$maxsize}'\nallowed_file_type = 'text/plain,image/jpeg,image/png,application/pdf,image/webp,application/octet-stream,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'\nallowed_extentions = '$extentions'\nuseModelPredict = '$useModelPredict'";
+            $content = $content . "maxsize = '{$maxsize}'\nallowed_extentions = '$extentions'\nuseModelPredict = '$useModelPredict'";
 
             $result = file_put_contents("./config.ini", $content);
             
@@ -109,13 +157,26 @@
             }
         }
         
+        public function showSyncFunction ()
+        {
+            echo "<div class='container'><div class='card mt-3 mr-2 ml-2 bt-1'>
+                        <div class='card-body'>
+                            <h5>Cập nhật dữ liệu</h5>
+                            <form action='' method='post'>
+                                <button type='submit' name='btn' id='sync-btn' class='btn btn-primary'>
+                                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d='M142.9 142.9c-17.5 17.5-30.1 38-37.8 59.8c-5.9 16.7-24.2 25.4-40.8 19.5s-25.4-24.2-19.5-40.8C55.6 150.7 73.2 122 97.6 97.6c87.2-87.2 228.3-87.5 315.8-1L455 55c6.9-6.9 17.2-8.9 26.2-5.2s14.8 12.5 14.8 22.2l0 128c0 13.3-10.7 24-24 24l-8.4 0c0 0 0 0 0 0L344 224c-9.7 0-18.5-5.8-22.2-14.8s-1.7-19.3 5.2-26.2l41.1-41.1c-62.6-61.5-163.1-61.2-225.3 1zM16 312c0-13.3 10.7-24 24-24l7.6 0 .7 0L168 288c9.7 0 18.5 5.8 22.2 14.8s1.7 19.3-5.2 26.2l-41.1 41.1c62.6 61.5 163.1 61.2 225.3-1c17.5-17.5 30.1-38 37.8-59.8c5.9-16.7 24.2-25.4 40.8-19.5s25.4 24.2 19.5 40.8c-10.8 30.6-28.4 59.3-52.9 83.8c-87.2 87.2-228.3 87.5-315.8 1L57 457c-6.9 6.9-17.2 8.9-26.2 5.2S16 449.7 16 440l0-119.6 0-.7 0-7.6z'/></svg> 
+                                    Cập nhật ngay
+                                </button>
+                            </form></div></div></div>";
+        }
+        
         public function showSetting()
         {
             $setting = $this->getSettingFile();
             $maxsize = ((int) $setting['maxsize']) / 1000;
             $fileExt= explode(",", $setting['allowed_extentions']);
             $useModel= (int) $setting['useModelPredict'];
-            $temp = htmlspecialchars(implode(",", $fileExt), ENT_QUOTES);
+            $temp = htmlspecialchars(implode(",", $fileExt), ENT_QUOTES, 'UTF-8');
             
             echo "
                 <form id='form1' name='form1' method='post' action='' class='container mt-4'>

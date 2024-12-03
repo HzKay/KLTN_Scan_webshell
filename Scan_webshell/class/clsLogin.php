@@ -3,7 +3,7 @@
         private $host = "localhost";
         private $username = "kltn";
         private $password = "123456";
-        private $database = "test";
+        private $database = "scan";
 
         private function connectDB()
         {
@@ -72,7 +72,7 @@
             return mysqli_stmt_errno($stmt);
         }
 
-        public function execRequesFiletDB ($query, ...$vars)
+        public function execRequesId ($query, ...$vars)
         {
             $conn = $this->connectDB();
             $stmt = mysqli_prepare($conn, $query);
@@ -109,8 +109,8 @@
             $isError = mysqli_stmt_errno($stmt);
 
             if ($isExecSuccess && $isError==0) {
-                $maTep = mysqli_insert_id($conn);
-                return $maTep;
+                $lastId = mysqli_insert_id($conn);
+                return $lastId;
             }
             
             $this->closeConnectDB($conn);
