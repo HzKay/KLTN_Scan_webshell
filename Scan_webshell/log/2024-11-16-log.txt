@@ -1,2 +1,0 @@
-[2024-11-16 09:53:46] Move "../Scan_webshell/pattern/normal/03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1731750826-03b06b4183cb9947ccda2c3d636406d4.php.txt"
-[2024-11-16 10:03:42] Move "../Scan_webshell/pattern/normal/03b06b4183cb9947ccda2c3d636406d4.php" to "./quarantine/1731751422-03b06b4183cb9947ccda2c3d636406d4.php.txt"

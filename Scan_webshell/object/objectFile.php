@@ -8,6 +8,8 @@
         public $SHA256Hash;
         public $signature;
 
+        public $date;
+
         public function setInfo($filePath, $size, $type, $SHA256Hash, $signature) {
             $this->filePath = $filePath;
             $this->size = $size;
@@ -15,6 +17,7 @@
             $this->SHA256Hash = $SHA256Hash;
             $this->signature = $signature;
             $this->maTep = 0;
+            $this->date = null;
         }
         public function getMaTep ()
         {
@@ -64,6 +67,14 @@
     
         public function setSignature($signature) {
             $this->signature = $signature;
+        }
+
+        public function getDate() {
+            return $this->date;
+        }
+
+        public function setDate($date) {
+            $this->date = $date;
         }
     }
 ?>

@@ -44,12 +44,11 @@
                                         $useModel = 0;
                                     }
                                     $setting->updateSetting($size, $fileExt, $useModel);
-                                    $setting->showSetting();
+                                    $setting->showSettingUi();
                                 }
                             }
                         } else {
-                            $setting->showSetting();
-                            $setting->showSyncFunction();
+                            $setting->showSettingUi();
                         }
                     ?>                
                 </div>

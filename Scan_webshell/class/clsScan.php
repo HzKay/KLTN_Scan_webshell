@@ -349,12 +349,19 @@
             return $this->webshellList;
         }        
 
-
-
         public function quaranFile($fileList, $action)
         {
+            require_once ('./model/mScan.php');
+            $database = new mScan();
             $result = array();
-
+            $scanId = $database->getLastScanId();
+            $query = "
+                UPDATE chitietketqua kq 
+                LEFT JOIN tep t ON t.MaTep = kq.MaTep
+                SET kq.HanhDong = 2
+                WHERE t.ViTriTep=? AND t.TenTep=? AND kq.MaQuet = ?;
+            ";
+            
             for ($index = 0; $index < count($fileList); $index++)
             {
                 if ($action[$index] == 1)
@@ -362,23 +369,28 @@
                     $results[$index] = true;
                 } elseif ($action[$index] == 2) {
                     $filePath = $fileList[$index];
-                    $filePathSplit = preg_split('#[\\\\/]+#', $filePath);
-                    $fileName = end($filePathSplit);
+                    $fileName = basename($filePath);
                     $fileLocation = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $filePath;
                     $fileLocation = $this->makeFitFilePath($fileLocation);
+                    $pathInDB = $this->makeFitFilePath(dirname($filePath) . DIRECTORY_SEPARATOR);
                     
-                    // Cách ly file (quarantine file)
-                    $newLocation = $this->quaranFolder . time() . "-" . $fileName . ".txt";
+                    $isUpdateInDB = $database->execRequestDB($query, $pathInDB, $fileName, $scanId);
                     
-                    $isMove = rename($fileLocation, $newLocation);
-                    $isLog = $this->addLogFile($filePath, $newLocation);
-        
-                    if ($isLog == 0)
+                    if ($isUpdateInDB == true)
                     {
-                        $results[$index] = $isMove;
-                    } else {
-                        $results[$index] = $isLog;
-                    }
+                        // Cách ly file (quarantine file)
+                        $newLocation = $this->quaranFolder . time() . "-" . $fileName . ".txt";
+                                            
+                        $isMove = rename($fileLocation, $newLocation);
+                        $isLog = $this->addLogFile($filePath, $newLocation);
+
+                        if ($isLog == 0)
+                        {
+                            $results[$index] = $isMove;
+                        } else {
+                            $results[$index] = $isLog;
+                        }
+                    }                    
                 }             
             }
 
@@ -445,9 +457,9 @@
 
         public function calcDashboard($files)
         {
-            $totalFile = count($files);
             $numShell = 0;
             $numQuarant = 0;
+            $totalFile = count($files);
             
             foreach ($files as $file)
             {
@@ -461,7 +473,7 @@
                 } 
             }
 
-            $result = array("totalFile" => $totalFile, "shell" => $numShell, "quarant" => $numQuarant);
+            $result = array("totalFile"=>$totalFile, "shell" => $numShell, "quarant" => $numQuarant);
             return $result;
         }
 
@@ -476,12 +488,12 @@
 
         public function getInfoDashboard()
         {
-            $date = $this->getDateRecentScan();
+            $scan = $this->getDateRecentScan();
             $files = $this->getFilesRecentScan();
             $number = $this->calcDashboard($files);
             $scanHist = $this->getScanHistory();
             $normalFile = $number["totalFile"] - $number["shell"];
-            $scanDays = json_encode(implode(', ', $scanHist["ngayThucHien"]));
+            $scanDays = json_encode(value: implode(', ', $scanHist["ngayThucHien"]));
             $numShell = json_encode(implode(', ', $scanHist["soWebshell"]));
 
             echo "
@@ -491,17 +503,15 @@
                     const time = document.getElementById('scan-time');
                     const quarant = document.getElementById('quarant-file');
                     const shell = document.getElementById('shell-file');
-                    const total = document.getElementById('total-file');
+                    const path = document.getElementById('scan-location');
                     let delayed;
                     const scanDates = {$scanDays};
                     const webshellCounts = {$numShell};
 
-                    total.innerHTML = '{$number["totalFile"]}';
+                    path.innerHTML = '{$scan['viTriQuet']}';
                     shell.innerHTML = '{$number["shell"]}';
                     quarant.innerHTML = '{$number["quarant"]}';
-                    time.innerHTML = '{$date}';
-
-                    
+                    time.innerHTML = '{$scan['ngayQuet']}';
 
                     new Chart(pieCtx, {
                         type: 'doughnut',
@@ -803,8 +813,10 @@
                 }
             }
         }
+
         // Tesst -----------------------------------------------------------------------------------
         
+
         // Tesst -----------------------------------------------------------------------------------
     }
 ?>

@@ -1,3 +1,6 @@
+<?php 
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,9 +38,9 @@
                     <ul class="dashboard-sumary col-sm-9 d-flex justify-content-around flex-wrap align-content-center">
                         <li class="dashboard-sumary-item">
                             <span>
-                                Tổng số tệp:
+                                Vị trí:
                             </span>
-                            <span id="total-file">
+                            <span id="scan-location">
                                 
                             </span>
                         </li>

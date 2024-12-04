@@ -71,15 +71,30 @@
 
         public function getDateRecentScan ()
         {
-            $query = "SELECT DATE_FORMAT(NgayQuet, '%d/%m/%Y') AS NgayQuet FROM ketquaquet ORDER BY MaQuet DESC LIMIT 1;";
-
+            $query = "SELECT ViTriQuet, DATE_FORMAT(NgayQuet, '%d/%m/%Y') AS NgayQuet FROM ketquaquet ORDER BY MaQuet DESC LIMIT 1;";
             $resultExec = $this->execRequestDB($query);
+
             $numRow = mysqli_num_rows($resultExec);
             if ($numRow > 0) {
                 while ($row = mysqli_fetch_assoc($resultExec)) {
-                    return $row["NgayQuet"];
+                    $result = array("viTriQuet"=>$row["ViTriQuet"], "ngayQuet"=>$row["NgayQuet"]);
                 }
+
+                return $result;
             }
+            return -1;
+        }
+
+        public function delUploadFile ($fileName, $filePath)
+        {
+            $query = "DELETE FROM tep WHERE TenTep = ? AND ViTriTep = ?";
+            $resultExec = $this->execRequestDB($query, $fileName, $filePath);
+
+            if ($resultExec == true)
+            {
+                return 0;
+            }
+
             return -1;
         }
 
@@ -280,11 +295,12 @@
                 INSERT INTO tailen
                     (maTep)
                 VALUES 
-                    (v_maTep)
+                    (?)
                 ON DUPLICATE KEY UPDATE
                     ngayTaiLen = CURRENT_TIMESTAMP
             ";
-            $result = $this->execRequestDB($query, $hash, $family, $idFile, $idFile);
+            
+            $result = $this->execRequestDB($query, $idFile);
 
             if ($result == true) {
                 return 0;
@@ -299,12 +315,13 @@
             $fileName = $fileInfo['basename'];
 
             $maTep = $this->isExistFile($fileName, $directory);
+            
             if ($maTep > 0)
             {
-                $maTep = $this->addOrUpdateFile($file, 'upload', $maTep);
+                $this->addOrUpdateFile($file, 'upload', $maTep);
             } else {
                 $maTep = $this->addOrUpdateFile($file, 'add');
-            }        
+            }
 
             $isUpSuccess = $this->addUpload($maTep);
             if ($isUpSuccess == 0 && $maTep > 0)
@@ -313,6 +330,29 @@
             }
 
             return -1;
+        }
+
+        public function getUploadFiles ()
+        {
+            require_once ('object/objectFile.php');
+            $fileList = array();
+            $query = "SELECT t.MaTep, tl.ngayTaiLen, t.TenTep, t.KichThuoc, t.LoaiTep, t.ViTriTep FROM tailen tl LEFT JOIN tep t ON tl.maTep = t.MaTep";
+
+            $resultExec = $this->execRequestDB($query);
+            $numRow = mysqli_num_rows($resultExec);
+            if ($numRow > 0) {
+                while ($row = mysqli_fetch_assoc($resultExec)) {
+                    $filePath = $row['ViTriTep'] . $row['TenTep'];
+                    $file = new ObjectFile;
+                    $file->setInfo($filePath, $row['KichThuoc'], $row['LoaiTep'], '', '');
+                    $file->setDate($row['ngayTaiLen']);
+                    $file->setMaTep($row['MaTep']);
+                    
+                    $fileList[] = $file;
+                }
+            }
+
+            return $fileList;
         }
     }
 ?>

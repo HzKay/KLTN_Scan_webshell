@@ -88,6 +88,7 @@
                                 case "Áp dụng": {
                                     $inputFile = $_POST["action-file-location"];
                                     $action = $_POST["action-file-chose"];
+                                    
                                     $p->quaranFile($inputFile, $action);
                                     break;
                                 }

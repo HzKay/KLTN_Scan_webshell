@@ -1,4 +1,0 @@
-[2024-10-26 22:09:27] Move "../Scan_webshell/pattern/normal/daylafiledoitumlum.php" to "./quarantine/1729980567-daylafiledoitumlum.php.txt"
-[2024-10-26 22:09:27] Move "../Scan_webshell/pattern/normal/text2.txt" to "./quarantine/1729980567-text2.txt.txt"
-[2024-10-26 22:14:25] Move "../Scan_webshell/pattern/normal/text2.txt" to "./quarantine/1729980865-text2.txt.txt"
-[2024-10-26 22:49:36] Move "../Scan_webshell/pattern/normal/text2.txt" to "./quarantine/1729982976-text2.txt.txt"
