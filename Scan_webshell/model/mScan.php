@@ -9,25 +9,13 @@
             $numRow = mysqli_num_rows($resultExec);
             if ($numRow > 0) {
                 while ($row = mysqli_fetch_assoc($resultExec)) {
-                    return $row["id"];
+                    return $row["MaWebshell"];
                 }
             }
 
             return -1;
         }
         
-        public function importHashToDB ($family, $hash)
-        {
-            $query = "INSERT INTO mabam  (MaBam, MaWebshell)  VALUES (?, ?)";
-            $resultExec = $this->execRequestDB($query, $hash, $family);
-            if ($resultExec)
-            {
-                return 0;
-            }
-
-            return -1;
-        }
-
         public function getScanHistory ()
         {
             $query = "
@@ -229,14 +217,14 @@
 
         public function getAllSigns ()
         {
-            $query = "SELECT Mau FROM chuky";
+            $query = "SELECT MaChuKy, Mau FROM chuky ORDER BY MaChuKy ASC";
             $signs = array();
             $resultExec = $this->execRequestDB($query);
             $numRow = mysqli_num_rows($resultExec);
 
             if ($numRow > 0) {
                 while ($row = mysqli_fetch_assoc($resultExec)) {
-                    $signs[] = $row["Mau"];
+                    $signs[] = array($row["Mau"], $row["MaChuKy"]);
                 }
 
                 return $signs;
@@ -252,6 +240,7 @@
                 $fileInfo = pathinfo($file->filePath);
                 $directory = $fileInfo['dirname'] . DIRECTORY_SEPARATOR;
                 $fileName = $fileInfo['basename'];
+                $isAddSigns = 0;
 
                 $maTep = $this->isExistFile($fileName, $directory);
 
@@ -264,8 +253,13 @@
                 
                 $isAddHash = $this->addHashFile($maTep, $file->SHA256Hash);
                 $isAddDetail = $this->addDetailScan($maTep, $scanId);
+              
+                if (count($file->signSample) > 0)
+                {
+                    $isAddSigns = $this->addSignsFile($maTep, $file->signSample);
+                }                
 
-                if ($isAddHash == -1 || $isAddDetail == -1) 
+                if ($isAddHash == -1 || $isAddDetail == -1 || $isAddSigns == -1) 
                 {
                     return -1;
                 } else {
@@ -274,6 +268,50 @@
             }
             
             return 0;
+        }
+
+        public function addSignsFile ($maTep ,$signs)
+        {
+            $place = implode(',', array_fill(0, count($signs[0]), "(?, ?)"));
+            $params = [];
+
+            foreach ($signs[0] as $item) {
+                $params[] = $maTep;  
+                $params[] = $item;  
+            }
+
+            $query = "INSERT INTO tep_chuky  (maTep, maChuKy)  VALUES {$place}";
+            $result = $this->execRequestDB($query, ...$params);
+
+            if ($result == true) {
+                return 0;
+            }
+            return -1;
+        }
+
+        public function addSignsSync ($sign, $family)
+        {
+            $queryInSigns = "INSERT INTO chuky (Mau)  VALUES (?)";
+            $idSign = $this->execRequesId($queryInSigns, $sign);
+            
+            if ($idSign > 0) {
+                if ($family != 'None')
+                {
+                    $queryAddShell = "INSERT INTO shell_chuky (maWebshell, maChuKy) VALUES (?, ?)";
+                    $result = $this->execRequestDB($queryAddShell, $family, $idSign);
+
+                    if($result == true)
+                    {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    return 0;
+                }
+            }
+
+            return -1;
         }
 
         public function addDataScan ($location, $files)

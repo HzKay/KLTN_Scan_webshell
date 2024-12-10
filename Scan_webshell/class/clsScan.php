@@ -161,7 +161,7 @@
                     $directories = array_merge($directories, $this->getAllForlder($path));
                 }
             }
-
+            
             return $directories;
         }
 
@@ -186,11 +186,10 @@
         {
             $directories = $this->getAllForlder("..");
             
-
             $folderList = array_filter($directories, function ($folderPath) use ($findFolderName) {
                 return stripos($folderPath, $findFolderName) !== false;
             });
-
+            
             $folderList = $this->normalizePath($folderList);
 
             return $folderList;
@@ -219,11 +218,14 @@
             }
 
             $signList = array();
-            foreach($signs as $sign) {
-                $result = preg_match_all($sign, $fileContent, $ouput, PREG_OFFSET_CAPTURE);
+            $signSample = array();
 
-                if ($result >= 0)
-                {
+            foreach($signs as $sign) {
+                $result = preg_match_all($sign[0], $fileContent, $ouput, PREG_OFFSET_CAPTURE);
+
+                if ($result > 0)
+                {                   
+                    $signSample[] = $sign[1];
                     foreach ($ouput[0] as $oup)
                     {
                         $oup[0] = htmlspecialchars($oup[0],ENT_QUOTES, 'UTF-8');
@@ -232,19 +234,13 @@
                 }
             }
 
-            return $signList; 
+            return array("signSample"=>$signSample, "signList"=>$signList); 
         }
 
         public function createHashCode ($filePath)
         {
             $hashCode = hash_file($this->hash_alg, $filePath);
             return $hashCode;
-        }
-
-        public function compareValue ($valueOne, $valueTwo)
-        {
-            $resultCompare = hash_equals($valueOne, $valueTwo);
-            return $resultCompare;
         }
 
         public function findHashInDB($hash)
@@ -256,30 +252,6 @@
 
             return $isAvailable;
         }
-
-        public function importToCSV ( $filePath ,$hashCode, $status=false)
-        {
-            $bytesWrite = 0123;
-
-            if ($status == true) 
-            {
-                $time = date("Y/m/d");
-                $header = $time . ", filePath, hashCode \n";
-                $bytesWrite = file_put_contents("./tennc.csv", (string)$header, FILE_APPEND);
-            } else {
-                $data = "0, " . $filePath . ", " . $hashCode . "\n";
-                $bytesWrite = file_put_contents("./tennc.csv", (string)$data, FILE_APPEND);
-            }
-
-            return $bytesWrite;
-        }
-
-        public function importHash($hash, $family)
-        {
-            include ('./model/mScan.php');
-            $mScan = new mScan();
-            $mScan->importHashToDB($family, $hash);
-        }        
 
         public function storeFiles ($file, $location) 
         {
@@ -300,6 +272,8 @@
         public function checkFilesContent ($filePath)
         {
             include_once("./object/objectFile.php");
+            require_once("./class/clsSendReq.php");
+            $svm = new clsSendReq();
             $newFilePath = array();
             $originalFilePath = $this->getAllFiles($filePath);
             $currentFile = 0;
@@ -317,30 +291,41 @@
             {
                 $objectFile = new ObjectFile();
                 $hashFile = $this->createHashCode($file);
-                // $isAvail = $this->findHashInDB($hashFile);
-                $isAvail = -1;
+                $isAvail = $this->findHashInDB($hashFile);
+                $fileSize = filesize($file);
+                $numSign = 0;
+                $type = "Normal";
                 $currentFile++;
 
                 if ($isAvail != -1) {
                     $newFilePath[] = $file;
-                }
-                else {    
+                    $file = str_replace($this->basePath, '', $file);
+                    $type = "Webshell";
+                    $numSign = 1;
+                    $objectFile->setInfo($file, $fileSize, $type, $hashFile, array('Scan hash', 0));  
+                } else {    
                     $signList = $this->validFileContent($file);
-                    $numSign = count($signList);
-                    $type = "Normal";
-                    $fileSize = filesize($file);
+                    $numSign = count($signList["signList"]);
 
                     if ($numSign > 0)
                     {
                         $type = "Webshell";
                         $newFilePath[] = $file;                        
+                        $objectFile->addSignSample($signList["signSample"]);
+                    } else {
+                        $svmcheck = $svm->svmCheckScan($file);
+                        if ($svmcheck == 1)
+                        {
+                            $type = "Webshell";
+                            $newFilePath[] = $file;  
+                        }
                     }
-                    $fileLocation = str_replace($this->basePath, '', $file);
 
-                    $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, $signList);  
-                    $this->storeFiles($objectFile, $numSign);
+                    $fileLocation = str_replace($this->basePath, '', $file);
+                    $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, $signList["signList"]);  
                 }  
                 
+                $this->storeFiles($objectFile, $numSign);
                 $this->setCurrentProcess($currentFile);
             }
             
@@ -492,10 +477,10 @@
             $files = $this->getFilesRecentScan();
             $number = $this->calcDashboard($files);
             $scanHist = $this->getScanHistory();
-            $normalFile = $number["totalFile"] - $number["shell"];
+            $percent = $number["shell"] - $number["quarant"];
             $scanDays = json_encode(value: implode(', ', $scanHist["ngayThucHien"]));
             $numShell = json_encode(implode(', ', $scanHist["soWebshell"]));
-
+            
             echo "
                 <script>
                     const ctx = document.getElementById('lineChart');
@@ -516,10 +501,10 @@
                     new Chart(pieCtx, {
                         type: 'doughnut',
                         data: {
-                            labels: ['Webshell', 'Bình thường'],
+                            labels: ['Cho phép', 'Cách ly'],
                             datasets: [{
                                 label: ' Số lượng file',
-                                data: [{$number["shell"]}, {$normalFile}],
+                                data: [{$percent}, {$number["quarant"]}],
                                 borderWidth: 1,
                                 backgroundColor: ['#CB4335', '#27AE60'],
                             }]
@@ -619,6 +604,7 @@
                             return response.json(); 
                         })
                         .then(data => {
+                            console.table(data);
                             printResult(data);
                         })
                         .catch(error => {
@@ -713,10 +699,17 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>`;
-                                for (let j = 0; j < files[i].signature.length; j++) {
+                                if (files[i].signature[0] != "Scan hash")
+                                {
+                                    for (let j = 0; j < files[i].signature.length; j++) {
+                                        resultHtml += `<tr>
+                                                        <td  class="overflow-scroll">${files[i].signature[j][0]}</td>
+                                                    </tr>`;
+                                    }
+                                } else {
                                     resultHtml += `<tr>
-                                                    <td  class="overflow-scroll">${files[i].signature[j][0]}</td>
-                                                </tr>`;
+                                                        <td  class="overflow-scroll">Scan hash</td>
+                                                    </tr>`; 
                                 }
 
                                 resultHtml += `</tbody></table>
@@ -788,7 +781,14 @@
         {
             $filePath = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . $files[$id]->filePath;
             $content = file_get_contents($filePath);
-            $content = $this->highlightText($content, $files[$id]->signature);
+            $sign = $files[$id]->signature;
+
+            if ($sign[0] != 'Scan hash')
+            {
+                $content = $this->highlightText($content, $sign);
+            } else {
+                $content = htmlspecialchars($content, ENT_QUOTES);
+            }
 
             return $content;
         }
@@ -798,7 +798,6 @@
             require_once("./model/mScan.php");
 
             $mScan = new mScan();
-
             $result = $mScan->addDataScan($location, $this->webshellList);
             
             switch ($result)

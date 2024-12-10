@@ -58,6 +58,24 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="confirmDel" tabindex="-1" role="dialog" aria-labelledby="confirmDelLabel" aria-hidden="true">
+        <div class="modal-dialog h-100 d-flex align-items-center" role="document"> 
+            <form action='./handleUpload.php' method='post'>
+                <input type="text" name="fileName" id="txtFile" hidden>
+                <div class="modal-content h-25">
+                    <div class="modal-header">
+                        <h4>
+                            Bạn có chắc muốn xóa file này không?
+                        </h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn whi-color bg-pri-color" data-dismiss="modal">Không</button>
+                        <button type="submit" class="btn" name='btn' value='delete'>Có</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
     <script src="./public/js/bootstrap.bundle.min.js"></script>
     <script src="./public/js/jquery-3.6.4.min.js"></script>
     <script src="./public/js/jquery.dataTables.min.js"></script>
@@ -78,6 +96,16 @@
             }
         });
     });
+
+    function confirmDel()
+    {
+        const fileName = document.getElementById("txtFile");
+        const itemFileName = document.getElementById("itemFileName");    
+        const myModal = new bootstrap.Modal(document.getElementById("confirmDel"));
+
+        fileName.value = itemFileName.value;
+        myModal.show();
+    }
 </script>
 </body>
 </html>

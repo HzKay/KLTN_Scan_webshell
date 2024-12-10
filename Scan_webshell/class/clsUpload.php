@@ -1,5 +1,5 @@
 <?php
-    class clsUpload {
+    class clsUpload{
         private $uploadFolder = "/upload/";
 
         public function showFormUpload ()
@@ -45,9 +45,11 @@
         public function uploadFile () 
         {
             require_once ("./model/mScan.php");
+            require_once ('./class/clsSendReq.php');
             require_once ("./object/objectFile.php");
             $databse = new mScan();
             $fileObject = new ObjectFile();
+            $sendReq = new clsSendReq();
 
             $file = $_FILES['file'];
             $isValidFile = $this->validateFile($file);
@@ -58,22 +60,29 @@
                 $folder = '.' . $this->uploadFolder . htmlspecialchars($file["name"], ENT_QUOTES);
                 $folder = $this->makeFitFilePath($folder);
                 $fileObject->setInfo($folder, $file['size'], '', '', '');
+                $MD_check =  $sendReq->kiemTraFile();
 
-                $isMove = move_uploaded_file($tmp_name, $folder);
-                $isAddToDB = $databse->uploadFile($fileObject);
-                if ($isMove == true && $isAddToDB == 0)
-                
-                if ($isMove == true && $isAddToDB == 0)
+                if ($MD_check == 0)
                 {
-                    echo "<script>alert('Tải lên thành công')
-                            window.location.href = './upload.php';
-                            </script>";
+                    $isMove = move_uploaded_file($tmp_name, $folder);
+                    $isAddToDB = $databse->uploadFile($fileObject);
+                    if ($isMove == true && $isAddToDB == 0)
                     
+                    if ($isMove == true && $isAddToDB == 0)
+                    {
+                        echo "<script>alert('Tải lên thành công')</script>";                    
+                    } else {
+                        echo "<script>alert('Lỗi, gặp vấn đề khi tải lên!')</script>";
+                    }
                 } else {
-                    echo "<script>alert('Lỗi, gặp vấn đề khi tải lên!')</script>";
+                    echo "<script>alert('Lỗi, tệp tin có thể là webshell!')</script>";
                 }
-            }                
-            echo "<script>alert('Lỗi, tệp tin không hợp lệ!')</script>";
+                
+            } else {
+                echo "<script>alert('Lỗi, tệp tin không hợp lệ!')</script>";
+            }
+            
+            echo "<script>window.location.href = './upload.php';</script>";
         }
 
         public function validateFileSize ($fileSize, $setting)
@@ -160,7 +169,9 @@
                         break;
                     }
                     case 'sync': {
-                        $this->uploadFile();
+                        require_once("./class/clsSendReq.php");
+                        $req = new clsSendReq();
+                        $req->addSignSync();
                         break;
                     }
                 }
@@ -223,7 +234,7 @@
             echo "<div class='container'><div class='card mt-3 mr-2 ml-2 bt-1'>
                         <div class='card-body'>
                             <h5>Cập nhật dữ liệu</h5>
-                            <form action='' method='post'>
+                            <form action='./handleUpload.php' method='post'>
                                 <button type='submit' name='btn' value='sync' id='sync-btn' class='btn btn-primary'>
                                     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d='M142.9 142.9c-17.5 17.5-30.1 38-37.8 59.8c-5.9 16.7-24.2 25.4-40.8 19.5s-25.4-24.2-19.5-40.8C55.6 150.7 73.2 122 97.6 97.6c87.2-87.2 228.3-87.5 315.8-1L455 55c6.9-6.9 17.2-8.9 26.2-5.2s14.8 12.5 14.8 22.2l0 128c0 13.3-10.7 24-24 24l-8.4 0c0 0 0 0 0 0L344 224c-9.7 0-18.5-5.8-22.2-14.8s-1.7-19.3 5.2-26.2l41.1-41.1c-62.6-61.5-163.1-61.2-225.3 1zM16 312c0-13.3 10.7-24 24-24l7.6 0 .7 0L168 288c9.7 0 18.5 5.8 22.2 14.8s1.7 19.3-5.2 26.2l-41.1 41.1c62.6 61.5 163.1 61.2 225.3-1c17.5-17.5 30.1-38 37.8-59.8c5.9-16.7 24.2-25.4 40.8-19.5s25.4 24.2 19.5 40.8c-10.8 30.6-28.4 59.3-52.9 83.8c-87.2 87.2-228.3 87.5-315.8 1L57 457c-6.9 6.9-17.2 8.9-26.2 5.2S16 449.7 16 440l0-119.6 0-.7 0-7.6z'/></svg> 
                                     Cập nhật ngay
@@ -325,8 +336,7 @@
                     $number = $index + 1;
                     $fileName = basename($file->filePath);
                     $size = $this->showSize($file->size);
-                    echo "
-                            <tr>
+                    echo "<tr>
                                 <td>{$number}</td>
                                 <td>{$fileName}</td>
                                 <td>{$size}</td>
@@ -336,12 +346,13 @@
                                         <button class='btn btn-sm action-btn mr-3' name='btn' value='download'>
                                             <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d='M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z'/></svg>
                                         </button>
-                                        <button class='btn btn-sm action-btn mr-3' name='btn' value='delete'>
+                                        <button type='button' data-toggle='modal' data-target='#confirmDel' class='btn btn-sm action-btn mr-3' onclick='confirmDel()'>
                                             <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d='M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.7 23.7 0 0 0 -21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0 -16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z'/></svg>
                                         </button>
-                                        <input type='text' hidden value='{$fileName}' name='fileName'>
+                                        <input type='text' hidden value='{$fileName}' id='itemFileName' name='fileName'>
                                     </form>
                                 </td>
+                                
                             </tr>
                     ";
                 }

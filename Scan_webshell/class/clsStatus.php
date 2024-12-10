@@ -20,7 +20,7 @@
                 $percent = round(($currentFile/$totalFiles)*100);
             }
 
-            $data[] = array("current"=>$currentFile, "percent"=>$percent);
+            $data[] = array("total"=>$totalFiles,"current"=>$currentFile, "percent"=>$percent);
             file_put_contents('progress.json', json_encode($data)); // Lưu tiến trình vào file
         }
 

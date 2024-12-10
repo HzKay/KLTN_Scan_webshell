@@ -8,6 +8,7 @@
         public $SHA256Hash;
         public $signature;
 
+        public $signSample = array();
         public $date;
 
         public function setInfo($filePath, $size, $type, $SHA256Hash, $signature) {
@@ -75,6 +76,14 @@
 
         public function setDate($date) {
             $this->date = $date;
+        }
+
+        public function addSignSample($feature) {
+            $this->signSample[] = $feature;
+        }
+
+        public function getSignSample() {
+            return $this->signSample;
         }
     }
 ?>
