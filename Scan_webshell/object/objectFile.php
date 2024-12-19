@@ -11,6 +11,8 @@
         public $signSample = array();
         public $date;
 
+        public $family = array();
+
         public function setInfo($filePath, $size, $type, $SHA256Hash, $signature) {
             $this->filePath = $filePath;
             $this->size = $size;
@@ -84,6 +86,14 @@
 
         public function getSignSample() {
             return $this->signSample;
+        }
+
+        public function setFamily($family) {
+            $this->family = $family;
+        }
+
+        public function getFamily() {
+            return $this->family;
         }
     }
 ?>

@@ -274,7 +274,9 @@
             include_once("./object/objectFile.php");
             require_once("./class/clsSendReq.php");
             require_once("./class/clsUpload.php");
-
+            require_once ('./model/mScan.php');
+            
+            $database = new mScan();
             $svm = new clsSendReq();
             $clsUpload = new clsUpload();
             $newFilePath = array();
@@ -304,8 +306,10 @@
                     $newFilePath[] = $file;
                     $file = str_replace($this->basePath, '', $file);
                     $type = "Webshell";
+                    $family = $database->getDataFamilyShell($isAvail);
                     $numSign = 1;
                     $objectFile->setInfo($file, $fileSize, $type, $hashFile, array('Scan hash', 0));  
+                    $objectFile->setFamily($family);  
                 } else {    
                     $signList = $this->validFileContent($file);
                     $numSign = count($signList["signList"]);
@@ -611,12 +615,22 @@
                             return response.json(); 
                         })
                         .then(data => {
-                            console.table(data);
+                            clearAllTimeout();
                             printResult(data);
                         })
                         .catch(error => {
-                            setTimeout(getResultScan, 500);
+                            console.log(error);
                         });
+                    }
+
+                    function clearAllTimeout()
+                    {
+                        var id = setTimeout(function() {}, 0);
+                        clearTimeout(id);
+
+                        while (id--) {
+                            clearTimeout(id); 
+                        }
                     }
 
                     function sendRequest (e)
@@ -697,8 +711,13 @@
                                                     <td colspan="3 border-0">
                                                         <div class="card p-3">
                                                             <div class="mb-2"><strong>Hash:</strong> ${files[i].SHA256Hash}</div>
-                                                            <div class="mb-2"><strong>Size:</strong> ${files[i].size}</div>
-                                                            <div class="mb-2"><strong>Signature:</strong></div>
+                                                            <div class="mb-2"><strong>Size:</strong> ${files[i].size}</div>`;
+                                if ((files[i].family["TenMau"]) != null)
+                                {
+                                    resultHtml += `<div class="mb-2"><strong>Nhóm shell:</strong> ${files[i].family["TenMau"]}</div>
+                                                    <div class="mb-2"><strong>Mô tả:</strong> ${files[i].family["ThongTin"]}</div>`;
+                                }
+                                                      resultHtml += `<div class="mb-2"><strong>Signature:</strong></div>
                                                             <table class="table table-sm table-bordered">
                                                                 <thead class="table-light">
                                                                     <tr>

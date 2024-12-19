@@ -1,4 +1,4 @@
-<?php     
+<?php  
     require_once('./class/clsUpload.php');
     $upload = new clsUpload();
 ?>
@@ -69,7 +69,7 @@
                         </h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn whi-color bg-pri-color" data-dismiss="modal">Không</button>
+                        <button type="button" class="btn whi-color bg-pri-color" onclick="closeConfirm()">Không</button>
                         <button type="submit" class="btn" name='btn' value='delete'>Có</button>
                     </div>
                 </div>
@@ -97,14 +97,21 @@
         });
     });
 
-    function confirmDel()
+    function confirmDel(itemFileName)
     {
-        const fileName = document.getElementById("txtFile");
-        const itemFileName = document.getElementById("itemFileName");    
+        const fileName = document.getElementById("txtFile");   
         const myModal = new bootstrap.Modal(document.getElementById("confirmDel"));
 
-        fileName.value = itemFileName.value;
-        myModal.show();
+        if (fileName && myModal) {
+            fileName.value = itemFileName;
+            myModal.show();
+        } 
+    }
+
+    function closeConfirm()
+    {
+        const myModal = bootstrap.Modal.getInstance(document.getElementById("confirmDel"));
+        myModal.hide(); 
     }
 </script>
 </body>

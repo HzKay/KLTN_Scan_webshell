@@ -2,9 +2,26 @@
     include_once ("./class/clsLogin.php");
 
     class mScan extends clsLoginDB {
+        public function getDataFamilyShell ($hash)
+        {
+            $query = "SELECT TenMau, ThongTin  FROM mauwebshell  WHERE MaWebshell = ?";
+
+            $resultExec = $this->execRequestDB($query, $hash);
+            $numRow = mysqli_num_rows($resultExec);
+            if ($numRow >= 0) {
+                while ($row = mysqli_fetch_array($resultExec))
+                {
+                    $result = array("TenMau" => $row["TenMau"], "ThongTin" => $row["ThongTin"]);
+                    return $result;
+                }
+            }
+
+            return -1;
+        }
+
         public function findHash ($hash)
         {
-            $query = "SELECT MaWebshell FROM mabam WHERE MaBam = ? LIMIT 1";
+            $query = "SELECT mb.MaWebshell FROM mabam mb  LEFT JOIN chitietketqua ct  ON mb.MaTep = ct.MaTep  WHERE (ct.HanhDong = 2 OR ct.MaTep IS NULL) AND MaBam = ? LIMIT 1";
             $resultExec = $this->execRequestDB($query, $hash);
             $numRow = mysqli_num_rows($resultExec);
             if ($numRow > 0) {

@@ -1,7 +1,7 @@
 <?php 
     class clsSendReq 
     {
-        private $urlModel = "http://localhost:5000/";
+        private $urlModel = "https://webshell-check-flaskapp.fly.dev/";
         public function svmCheckUpload ($file)
         {
             if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($file)) {
