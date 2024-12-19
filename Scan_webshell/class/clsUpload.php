@@ -289,7 +289,7 @@
 
         }
 
-        private function getSettingFile()
+        public function getSettingFile()
         {
             $filepath = "./config.ini";
             $setting = parse_ini_file($filepath);

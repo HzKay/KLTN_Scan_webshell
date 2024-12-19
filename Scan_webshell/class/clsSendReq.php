@@ -70,7 +70,9 @@
 
         public function kiemTraFile () {
             require_once ("./class/clsScan.php");
+            require_once("./class/clsUpload.php");
             $clsScan = new clsScan();
+            $clsUpload = new clsUpload();
             $file = $_FILES["file"];
             $fileNameTmp = $file ["tmp_name"];
             $hashCode = $clsScan->createHashCode($fileNameTmp);
@@ -83,8 +85,14 @@
     
                 if ($numSign <= 0)
                 {
-                    $svmCheckUpload = $this->svmCheckUpload($file);
-                    return $svmCheckUpload;
+                    $isTick = $clsUpload->getSettingFile();
+                    if ($isTick["useModelPredict"] == 1)
+                    {
+                        $svmCheckUpload = $this->svmCheckUpload($file);
+                        return $svmCheckUpload;
+                    }
+
+                    return 0;
                 }
             }
 

@@ -273,7 +273,10 @@
         {
             include_once("./object/objectFile.php");
             require_once("./class/clsSendReq.php");
+            require_once("./class/clsUpload.php");
+
             $svm = new clsSendReq();
+            $clsUpload = new clsUpload();
             $newFilePath = array();
             $originalFilePath = $this->getAllFiles($filePath);
             $currentFile = 0;
@@ -313,11 +316,15 @@
                         $newFilePath[] = $file;                        
                         $objectFile->addSignSample($signList["signSample"]);
                     } else {
-                        $svmcheck = $svm->svmCheckScan($file);
-                        if ($svmcheck == 1)
+                        $isTick = $clsUpload->getSettingFile();
+                        if ($isTick["useModelPredict"] == 1)
                         {
-                            $type = "Webshell";
-                            $newFilePath[] = $file;  
+                            $svmcheck = $svm->svmCheckScan($file);
+                            if ($svmcheck == 1)
+                            {
+                                $type = "Webshell";
+                                $newFilePath[] = $file;  
+                            }
                         }
                     }
 
