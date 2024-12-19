@@ -148,35 +148,42 @@
             return $this->errorList[$errorCode];
         }
 
-        public function getAllForlder ($url)
+        public function getAllFolder ($url)
         {
+            if ($url == "..") {
+                $url = dirname(__FILE__, 3);  // Di chuyển lên hai cấp từ file hiện tại
+            }
+
             $directories = [];
             $dir = new DirectoryIterator($url);
 
-            foreach ($dir as $fileinfo) {
-                if ($fileinfo->isDir() && !$fileinfo->isDot()) {
-                    $folderName = $fileinfo->getFilename();
-                    $path = $url."/".$folderName;
-                    $directories[] = $path;
-                    $directories = array_merge($directories, $this->getAllForlder($path));
-                }
+            // Lặp qua các mục trong thư mục
+            foreach ($dir as $fileinfo) {               
+                if (!$fileinfo->isDot())
+                {
+                    if ($fileinfo->isDir()) {
+                        $folderName = $fileinfo->getFilename();
+                        $path = $url . DIRECTORY_SEPARATOR . $folderName;
+                        $directories[] = $path;  
+
+                        // Đệ quy lấy các thư mục con
+                        $directories = array_merge($directories, $this->getAllFolder($path));
+                    }
+                    
+                }                
             }
-            
+
             return $directories;
         }
 
-        public function normalizePath ($folderList, $mode = 1)
+        public function normalizePath ($folderList)
         {
             $result = array();
-
+            
             foreach ($folderList as $item)
             {
-                if ($mode == 1) 
-                {
-                    $result[] = substr($item, 3);
-                } else {
-                    $result[] = str_replace($this->basePath, '', $item);
-                }
+                $basePath = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR;
+                $result[] = str_replace($basePath, '', $item);
             }
 
             return $result;
@@ -184,7 +191,7 @@
 
         public function findFolderLocation($findFolderName)
         {
-            $directories = $this->getAllForlder("..");
+            $directories = $this->getAllFolder("..");
             
             $folderList = array_filter($directories, function ($folderPath) use ($findFolderName) {
                 return stripos($folderPath, $findFolderName) !== false;
@@ -319,21 +326,30 @@
                         $type = "Webshell";
                         $newFilePath[] = $file;                        
                         $objectFile->addSignSample($signList["signSample"]);
+
+                        $fileLocation = str_replace($this->basePath, '', $file);
+                        $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, $signList["signList"]);  
                     } else {
                         $isTick = $clsUpload->getSettingFile();
                         if ($isTick["useModelPredict"] == 1)
                         {
                             $svmcheck = $svm->svmCheckScan($file);
+                            $fileLocation = str_replace($this->basePath, '', $file);
+
                             if ($svmcheck == 1)
                             {
                                 $type = "Webshell";
                                 $newFilePath[] = $file;  
+                                
+                                $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, array('ML predict', 0));  
+                            } else {
+                                $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, $signList["signList"]);  
                             }
-                        }
-                    }
 
-                    $fileLocation = str_replace($this->basePath, '', $file);
-                    $objectFile->setInfo($fileLocation, $fileSize, $type, $hashFile, $signList["signList"]);  
+                        }
+
+                        
+                    }
                 }  
                 
                 $this->storeFiles($objectFile, $numSign);
@@ -718,23 +734,27 @@
                                                     <div class="mb-2"><strong>Mô tả:</strong> ${files[i].family["ThongTin"]}</div>`;
                                 }
                                                       resultHtml += `<div class="mb-2"><strong>Signature:</strong></div>
-                                                            <table class="table table-sm table-bordered">
+                                                            <table class="table table-sm table-bordered range-width">
                                                                 <thead class="table-light">
                                                                     <tr>
                                                                         <th scope="col">Chữ ký</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>`;
-                                if (files[i].signature[0] != "Scan hash")
+                                if (files[i].signature[0] != "Scan hash" && files[i].signature[0] != "ML predict")
                                 {
                                     for (let j = 0; j < files[i].signature.length; j++) {
                                         resultHtml += `<tr>
                                                         <td  class="overflow-scroll">${files[i].signature[j][0]}</td>
                                                     </tr>`;
                                     }
-                                } else {
+                                } else if (files[i].signature[0] == "Scan hash") {
                                     resultHtml += `<tr>
                                                         <td  class="overflow-scroll">Scan hash</td>
+                                                    </tr>`; 
+                                } else {
+                                    resultHtml += `<tr>
+                                                        <td  class="overflow-scroll">ML predict</td>
                                                     </tr>`; 
                                 }
 
@@ -809,7 +829,7 @@
             $content = file_get_contents($filePath);
             $sign = $files[$id]->signature;
 
-            if ($sign[0] != 'Scan hash')
+            if ($sign[0] != 'Scan hash' && $sign[0] != 'ML predict')
             {
                 $content = $this->highlightText($content, $sign);
             } else {

@@ -5,6 +5,10 @@
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
+table td, table th {
+    word-break: break-word; 
+}
+
 .mw-80 {
     min-width: 80%;
 }
@@ -132,4 +136,9 @@
     fill: #fff;
     width: 22px;
     margin-right: 10px;
+}
+
+.range-width {
+    max-width: 100%!important;
+    overflow: scroll!important;
 }
