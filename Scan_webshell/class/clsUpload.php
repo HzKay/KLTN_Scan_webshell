@@ -42,6 +42,50 @@
             return $newFilePath;
         }
 
+        public function uploadFileExter () 
+        {
+            require_once ("./model/mScan.php");
+            require_once ('./class/clsSendReq.php');
+            require_once ("./object/objectFile.php");
+            $databse = new mScan();
+            $fileObject = new ObjectFile();
+            $sendReq = new clsSendReq();
+
+            $location = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . $_POST["location"];
+            $redirect = "./../" . $_POST["redirect"];
+            $file = $_FILES['file'];
+            $isValidFile = $this->validateFile($file);
+
+            if ($isValidFile)
+            {
+                $tmp_name = $file['tmp_name'];
+                $folder = $this->makeFitFilePath($location ) . htmlspecialchars($file["name"], ENT_QUOTES);
+                $fileObject->setInfo( $folder, $file['size'], '', '', '');
+                $MD_check =  $sendReq->kiemTraFile();
+
+                if ($MD_check == 0)
+                {
+                    $isMove = move_uploaded_file($tmp_name, $folder);
+                    $isAddToDB = $databse->uploadFile($fileObject);
+                    if ($isMove == true && $isAddToDB == 0)
+                    
+                    if ($isMove == true && $isAddToDB == 0)
+                    {
+                        echo "<script>alert('Tải lên thành công')</script>";                    
+                    } else {
+                        echo "<script>alert('Lỗi, gặp vấn đề khi tải lên!')</script>";
+                    }
+                } else {
+                    echo "<script>alert('Lỗi, tệp tin có thể là webshell!')</script>";
+                }
+                
+            } else {
+                echo "<script>alert('Lỗi, tệp tin không hợp lệ!')</script>";
+            }
+            
+            echo "<script>window.location.href = '{$redirect}';</script>";
+        }
+
         public function uploadFile () 
         {
             require_once ("./model/mScan.php");
@@ -172,6 +216,10 @@
                         require_once("./class/clsSendReq.php");
                         $req = new clsSendReq();
                         $req->addSignSync();
+                        break;
+                    }
+                    case 'uploadExter': {
+                        $this->uploadFileExter();
                         break;
                     }
                 }
