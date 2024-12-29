@@ -1,7 +1,11 @@
 <?php
     class clsUpload{
         private $uploadFolder = "/upload/";
+        private $dir;
 
+        public function __construct() {
+            $this->dir = dirname(__DIR__);
+        }
         public function showFormUpload ()
         {
           $formUpload = "
@@ -42,11 +46,11 @@
             return $newFilePath;
         }
 
-        public function uploadFileExter () 
+        public function uploadFileExterNotSafe () 
         {
-            require_once ("./model/mScan.php");
-            require_once ('./class/clsSendReq.php');
-            require_once ("./object/objectFile.php");
+            require_once ($this->makeFitFilePath($this->dir . "/model/mScan.php"));
+            require_once ($this->makeFitFilePath($this->dir . "/class/clsSendReq.php"));
+            require_once ($this->makeFitFilePath($this->dir . "/object/objectFile.php"));
             $databse = new mScan();
             $fileObject = new ObjectFile();
             $sendReq = new clsSendReq();
@@ -67,8 +71,7 @@
                 {
                     $isMove = move_uploaded_file($tmp_name, $folder);
                     $isAddToDB = $databse->uploadFile($fileObject);
-                    if ($isMove == true && $isAddToDB == 0)
-                    
+
                     if ($isMove == true && $isAddToDB == 0)
                     {
                         echo "<script>alert('Tải lên thành công')</script>";                    
@@ -86,11 +89,73 @@
             echo "<script>window.location.href = '{$redirect}';</script>";
         }
 
+        public function uploadFileExterSafe ($location, $redirect=false) 
+        {
+            $dir = dirname(__DIR__);
+
+            require_once ($this->makeFitFilePath($dir .'/class/clsSendReq.php'));
+            require_once ($this->makeFitFilePath($dir . "/object/objectFile.php"));
+            require_once($this->makeFitFilePath($dir . "/class/clsScan.php"));
+            require_once($this->makeFitFilePath($dir . "/model/mScan.php"));
+
+            $fileObject = new ObjectFile();
+            $sendReq = new clsSendReq();
+            $scan = new clsScan(); 
+            $databse = new mScan();
+
+            $isValidLo = $scan->checkValidFolderLocation($location);
+            $isValidRe = $redirect == false ? $scan->checkValidFolderLocation($redirect) : 1;
+
+            if ($isValidLo == 1 && $isValidRe == 1) 
+            {
+                $location = $this->makeFitFilePath(dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . $location);
+
+                if (!is_dir($location)) {
+                    mkdir($location, 0755, true);
+                }
+
+                $file = $_FILES['file'];
+                $isValidFile = $this->validateFile($file);
+
+                if ($isValidFile)
+                {
+                    $tmp_name = $file['tmp_name'];
+                    $folder = $this->makeFitFilePath($location ) . htmlspecialchars($file["name"], ENT_QUOTES);
+                    $fileObject->setInfo( $folder, $file['size'], '', '', '');
+                    $MD_check =  $sendReq->kiemTraFile();
+    
+                    if ($MD_check == 0)
+                    {
+                        $isMove = move_uploaded_file($tmp_name, $folder);
+                        $isAddToDB = $databse->uploadFile($fileObject);
+    
+                        if ($isMove == true && $isAddToDB == 0)
+                        {
+                            echo "<script>alert('Tải lên thành công')</script>";                    
+                        } else {
+                            echo "<script>alert('Lỗi, gặp vấn đề khi tải lên!')</script>";
+                        }
+                    } else {
+                        echo "<script>alert('Lỗi, tệp tin có thể là webshell!')</script>";
+                    }
+                } else {
+                    echo "<script>alert('Lỗi, tệp tin không hợp lệ!')</script>";
+                }
+                
+                if ($redirect != false)
+                {
+                    echo "<script>window.location.href = '{$redirect}';</script>";
+                }
+            } else {
+                echo "<script>alert('Lỗi, thông số đầu vào không hợp lệ!')</script>";
+            }
+        }
+
         public function uploadFile () 
         {
-            require_once ("./model/mScan.php");
-            require_once ('./class/clsSendReq.php');
-            require_once ("./object/objectFile.php");
+            require_once ($this->makeFitFilePath($this->dir . "/model/mScan.php"));
+            require_once ($this->makeFitFilePath($this->dir . "/class/clsSendReq.php"));
+            require_once ($this->makeFitFilePath($this->dir . "/object/objectFile.php"));
             $databse = new mScan();
             $fileObject = new ObjectFile();
             $sendReq = new clsSendReq();
@@ -167,7 +232,7 @@
 
         public function deleteFile ($fileName)
         {
-            require_once ("./model/mScan.php");
+            require_once ($this->makeFitFilePath($this->dir . "/model/mScan.php"));
 
             $databse = new mScan();
             $filePath = dirname(dirname( __FILE__ )) . $this->uploadFolder . htmlspecialchars($fileName, ENT_QUOTES);
@@ -213,13 +278,13 @@
                         break;
                     }
                     case 'sync': {
-                        require_once("./class/clsSendReq.php");
+                        require_once ($this->makeFitFilePath($this->dir . "/class/clsSendReq.php"));
                         $req = new clsSendReq();
                         $req->addSignSync();
                         break;
                     }
                     case 'uploadExter': {
-                        $this->uploadFileExter();
+                        $this->uploadFileExterNotSafe();
                         break;
                     }
                 }
@@ -339,7 +404,7 @@
 
         public function getSettingFile()
         {
-            $filepath = "./config.ini";
+            $filepath = dirname(__DIR__) . "/config.ini";
             $setting = parse_ini_file($filepath);
 
             return $setting;
@@ -360,7 +425,7 @@
         }
         public function showUploadFiles()
         {
-            require_once("./model/mScan.php");
+            require_once ($this->makeFitFilePath($this->dir . "/model/mScan.php"));
 
             $mScan = new mScan();
             $uploadFiles = $mScan->getUploadFiles();

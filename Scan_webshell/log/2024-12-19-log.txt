@@ -1,2 +1,0 @@
-[2024-12-19 14:42:53] Move "Scan_webshell\pattern\normal\New Text Document.txt" to "./quarantine/1734619373-New Text Document.txt.txt"
-[2024-12-19 14:47:30] Move "Scan_webshell\pattern\normal\New Text Document.txt" to "./quarantine/1734619650-New Text Document.txt.txt"

@@ -1,5 +1,6 @@
 <?php
-    include_once ("./class/clsLogin.php");
+    $dir = dirname(__DIR__);
+    include ($dir . "/class/clsLogin.php");
 
     class mScan extends clsLoginDB {
         public function getDataFamilyShell ($hash)

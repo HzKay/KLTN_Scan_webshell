@@ -2,6 +2,12 @@
     class clsSendReq 
     {
         private $urlModel = "https://webshell-check-flaskapp.fly.dev/";
+        
+        private $dir;
+        
+        public function __construct() {
+            $this->dir = dirname(__DIR__);
+        }
         public function svmCheckUpload ($file)
         {
             if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($file)) {
@@ -69,8 +75,8 @@
         }
 
         public function kiemTraFile () {
-            require_once ("./class/clsScan.php");
-            require_once("./class/clsUpload.php");
+            require_once ($this->dir . "/class/clsScan.php");
+            require_once ($this->dir . "/class/clsUpload.php");
             $clsScan = new clsScan();
             $clsUpload = new clsUpload();
             $file = $_FILES["file"];
@@ -125,7 +131,7 @@
 
         public function addSignSync ()
         {
-            require_once("./model/mScan.php");
+            require_once ($this->dir . "/model/mScan.php");
             $database = new mScan();
 
             $data = $this->getSignSync();

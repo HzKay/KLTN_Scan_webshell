@@ -1,5 +1,6 @@
 <?php
-    include ("./class/clsStatus.php");
+    $direct = dirname(__DIR__);
+    include ($direct . "/class/clsStatus.php");
     class clsScan extends statusScan 
     {
         private $noDisplay = array(".", "..",);
@@ -215,7 +216,7 @@
 
         public function validFileContent ($file)
         {
-            require_once ('./model/mScan.php');
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
             $databse = new mScan();          
             $signs = $databse->getAllSigns();
             $fileContent = $this->getFileContent(filePath: $file);
@@ -252,7 +253,7 @@
 
         public function findHashInDB($hash)
         {
-            require_once("./model/mScan.php");
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
             $mScan = new mScan();
 
             $isAvailable = $mScan->findHash($hash);
@@ -278,10 +279,10 @@
 
         public function checkFilesContent ($filePath)
         {
-            include_once("./object/objectFile.php");
-            require_once("./class/clsSendReq.php");
-            require_once("./class/clsUpload.php");
-            require_once ('./model/mScan.php');
+            include_once ($this->makeFitFilePath(dirname(__DIR__) . "/object/objectFile.php"));
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/class/clsSendReq.php"));
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/class/clsUpload.php"));
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
             
             $database = new mScan();
             $svm = new clsSendReq();
@@ -363,7 +364,7 @@
 
         public function quaranFile($fileList, $action)
         {
-            require_once ('./model/mScan.php');
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
             $database = new mScan();
             $result = array();
             $scanId = $database->getLastScanId();
@@ -433,7 +434,7 @@
 
         public function getScanHistory()
         {
-            require_once("./model/mScan.php");
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
 
             $mScan = new mScan();
             $dates = array();
@@ -452,8 +453,8 @@
 
         public function getFilesRecentScan()
         {
-            require_once("./model/mScan.php");
-            require_once("./object/objectResultScan.php");
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/object/objectResultScan.php"));
 
             $mScan = new mScan();
             $scanRecent = array();
@@ -491,7 +492,7 @@
 
         public function getDateRecentScan()
         {
-            require_once("./model/mScan.php");
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
             $mScan = new mScan();
             $result = $mScan->getDateRecentScan();
 
@@ -841,7 +842,7 @@
 
         public function addDataScan ($location)
         {
-            require_once("./model/mScan.php");
+            require_once ($this->makeFitFilePath(dirname(__DIR__) . "/model/mScan.php"));
 
             $mScan = new mScan();
             $result = $mScan->addDataScan($location, $this->webshellList);
